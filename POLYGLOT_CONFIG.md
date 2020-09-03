@@ -17,3 +17,9 @@ devices serial numbers, units, AGL, and Elevation from the station data.
 
 If you are unable to connect to the WeatherFlow servers, the data may be
 entered manually.
+
+TODO: At some point users will have to be authenticted to access the station
+data.  To authenticate go to https://tempestwx.com/settings/tokens and create
+an access token.  Enter that access token in the configuration here.  Note, 
+this is only needed to access data on the WeatherFlow servers.  The local UDP
+data stream from the hub will continue to work as before.
