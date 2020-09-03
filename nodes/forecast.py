@@ -45,7 +45,7 @@ class ForecastNode(polyinterface.Node):
 
     def update(self, forecast):
         if 'day_num' in forecast:
-            self.setDriver('ST', forecast['day_num'])
+            self.setDriver('ST', (forecast['day_num'] + 1))
         if 'air_temp_high' in forecast:
             self.setDriver('GV0', forecast['air_temp_high'])
         if 'air_temp_low' in forecast:
