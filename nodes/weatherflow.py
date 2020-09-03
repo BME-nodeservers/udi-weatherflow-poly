@@ -386,8 +386,8 @@ class Controller(polyinterface.Controller):
         self.heartbeat()
         self.set_hub_timestamp()
 
-        # Query for forecast info?
-        #  https://swd.weatherflow.com/swd/rest/better_forecast?station_id={}&api_key={}&lat={}&lon={} 
+        # Query for forecast info
+        forecast_query()
 
     def query(self):
         for node in self.nodes:
