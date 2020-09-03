@@ -27,6 +27,15 @@ class ForecastNode(polyinterface.Node):
 
     def SetUnits(self, u):
         self.units = u
+        if (u == 'c'):  # C
+            self.drivers[1]['uom'] = 4
+            self.drivers[2]['uom'] = 4
+        elif (u == 'uk'):  # C
+            self.drivers[1]['uom'] = 4
+            self.drivers[2]['uom'] = 4
+        elif (u == 'f'):   # F
+            self.drivers[1]['uom'] = 17
+            self.drivers[2]['uom'] = 17
 
     def setDriver(self, driver, value):
         super(ForecastNode, self).setDriver(driver, value, report=True, force=True)

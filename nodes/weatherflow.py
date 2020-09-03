@@ -486,8 +486,8 @@ class Controller(polyinterface.Controller):
             title = 'Forecast ' + str(day)
             try:
                 node = forecast.ForecastNode(self, self.address, address, title)
+                node.SetUnits(self.units['temperature'])
                 self.addNode(node)
-                # node.SetUnits()
             except Excepton as e:
                 LOGGER.error('Failed to create forecast node ' + title)
                 LOGGER.error(e)
