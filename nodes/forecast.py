@@ -38,6 +38,9 @@ class ForecastNode(polyinterface.Node):
             self.drivers[2]['uom'] = 17
 
     def setDriver(self, driver, value):
+        if ((driver == 'GV0' or driver == 'GV1') and self.units == "f"):
+            value = (value * 1.8) + 32  # convert to F
+
         super(ForecastNode, self).setDriver(driver, value, report=True, force=True)
 
     def update(self, forecast):
