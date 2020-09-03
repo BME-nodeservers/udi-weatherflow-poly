@@ -22,6 +22,7 @@ from nodes import wind
 from nodes import light
 from nodes import lightning
 from nodes import hub
+from nodes import forecast
 
 LOGGER = polyinterface.LOGGER
 
@@ -470,6 +471,30 @@ class Controller(polyinterface.Controller):
             # number:
             # swd.weatherflow.com/swd/rest/observations/station/<num>?apikey=
 
+        num_days = int(self.params.get('Forecast Days'))
+        if num_days < 10:
+            # delete any extra days
+            for day in range(num_days, 10):
+                address = 'forecast_' + str(day)
+                try:
+                    self.delNode(address)
+                except:
+                    LOGGER.debug('Failed to delete node ' + address)
+
+        for day in range(0,num_days):
+            address = 'forecast_' + str(day)
+            title = 'Forecast ' + str(day)
+            try:
+                node = forecast.ForecastNode(self, self.address, address, title)
+                self.addNode(node)
+                # node.SetUnits()
+            except Excepton as e:
+                LOGGER.error('Failed to create forecast node ' + title)
+                LOGGER.error(e)
+
+
+
+
     def read_custom_data(self):
         if 'customData' in self.polyConfig:
             try:
@@ -531,7 +556,9 @@ class Controller(polyinterface.Controller):
                 address = 'forecast_' + str(day)
                 LOGGER.debug(' >>>>   period ' + str(forecast['day_start_local']) + '  ' + address)
                 LOGGER.debug(forecast)
+
                 # call node update with forecast
+                self.nodes[address].update(forecast)
 
                 day += 1
                 if day >= int(self.params.get('Forecast Days')):
