@@ -115,6 +115,12 @@ class Controller(polyinterface.Controller):
             'isRequired': False,
             'notice': '',
             },
+            {
+            'name': 'Forecast Days',
+            'default': '0',
+            'isRequired': False,
+            'notice': '',
+            },
             ])
 
     def process_config(self, config):
@@ -509,7 +515,27 @@ class Controller(polyinterface.Controller):
                 LOGGER.error(str(e))
                 return
 
-            LOGGER.debug(jdata)
+            #LOGGER.debug(jdata)
+            # Main tags: current_conditions & forecast
+            #  forcast has daily array and hourly array (maybe more)
+
+            current = jdata['current_conditions']
+            LOGGER.debug(current)
+
+            daily = jdata['forecast']['daily']
+            LOGGER.debug(daily)
+
+            # focus on passing daily data to forecast nodes
+            day = 0
+            for forecast in daily:
+                address = 'forecast_' + str(day)
+                LOGGER.debug(' >>>>   period ' + str(forecast['day_start_local']) + '  ' + address)
+                LOGGER.debug(forecast)
+                # call node update with forecast
+
+                day += 1
+                if day >= int(self.params.get('Forecast Days')):
+                    return
 
         except Exception as e:
             LOGGER.error(str(e))
