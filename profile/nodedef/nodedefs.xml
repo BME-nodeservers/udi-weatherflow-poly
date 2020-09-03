@@ -240,4 +240,15 @@
             <st id="GV0" editor="I_MILES" />
         </sts>
     </nodeDef>
+    <nodeDef id="forecast" nodeType="139" nls="139F">
+        <editors />
+        <sts>
+            <st id="ST" editor="DAY" />
+            <st id="GV0" editor="I_TEMP" />
+            <st id="GV1" editor="I_TEMP" />
+            <st id="GV13" editor="WEATHER" />
+            <st id="GV18" editor="PERCENT" />
+        </sts>
+    </nodeDef>
+
 </nodeDefs>

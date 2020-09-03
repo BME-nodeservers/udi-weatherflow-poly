@@ -98,6 +98,19 @@
 	<editor id="I_RSSI">
 		<range uom="25" min="-500" max="0" prec="0" />
 	</editor>
+	<editor id="I_TEMP">
+		<range uom="4" min="-50" max="75" step="0.5" prec="1" />
+		<range uom="17" min="-50" max="150" step="1" prec="1" />
+	</editor>
+	<editor id="DAY">
+		<range uom="75" min="0" max="6" prec="0" />
+	</editor>
+	<editor id="PERCENT">
+		<range uom="51" min="0" max="100" prec="0" />
+	</editor>
+	<editor id="WEATHER">
+		<range uom="25" min="0" max="100" nls="WEATHER" />
+	</editor>
 
 	<!-- Boolean -->
 	<editor id="bool">

@@ -104,6 +104,14 @@ ND-lightningUS-ICON = Input
 ST-139S-ST-NAME = Strikes
 ST-139S-GV0-NAME = Distance
 
+ND-forecast-NAME = Forecast
+ND-forecast-ICON = Weather
+ST-139F-ST-NAME = Day
+ST-139F-GV0-NAME = High Temperature
+ST-139F-GV1-NAME = Low Temperature
+ST-139F-GV13-NAME = Conditions
+ST-139F-GV18-NAME = Chance of Precipitation
+
 EN_RAINTYPE-0 = None
 EN_RAINTYPE-1 = Rain
 EN_RAINTYPE-2 = Hail
@@ -157,3 +165,6 @@ DBG-30 = Warning
 DBG-40 = Error
 DBG-50 = Critical
 
+
+WEATHER-0 = Clear
+WEATHER-1 = Fair
