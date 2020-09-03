@@ -8,6 +8,7 @@ import sys
 import time
 import datetime
 import urllib3
+import requests
 import json
 import socket
 import math
@@ -34,6 +35,8 @@ class Controller(polyinterface.Controller):
         self.primary = self.address
         self.stopping = False
         self.stopped = True
+        self.latitude = 0
+        self.longitude = 0
         self.rain_data = {
                 'hourly': 0,
                 'hour' : 0,
@@ -227,6 +230,14 @@ class Controller(polyinterface.Controller):
                 LOGGER.info('WF says units are metric')
                 self.params.set('Units', 'metric')
 
+            #LOGGER.debug("********************************************")
+            #LOGGER.debug(awdata)
+            #LOGGER.debug("********************************************")
+            self.latitude = awdata['latitude']
+            self.longitude = awdata['longitude']
+            LOGGER.debug('latitude = ' + self.latitude);
+            LOGGER.debug('longitude = ' + self.longitude);
+
             # Override entered elevation with info from station
             # TODO: Only override if current value is 0?
             #       if we do override, should this save to customParams too?
@@ -350,6 +361,7 @@ class Controller(polyinterface.Controller):
         self.udp = threading.Thread(target = self.udp_data)
         self.udp.daemon = True
         self.udp.start()
+        self.forecast_query()
 
         #for node in self.nodes:
         #       LOGGER.info (self.nodes[node].name + ' is at index ' + node)
@@ -366,6 +378,9 @@ class Controller(polyinterface.Controller):
         """
         self.heartbeat()
         self.set_hub_timestamp()
+
+        # Query for forecast info?
+        #  https://swd.weatherflow.com/swd/rest/better_forecast?station_id={}&api_key={}&lat={}&lon={} 
 
     def query(self):
         for node in self.nodes:
@@ -476,6 +491,29 @@ class Controller(polyinterface.Controller):
                 self.rain_data['week'] = datetime.datetime.now().isocalendar()[1]
                 self.rain_data['month'] = datetime.datetime.now().month
                 self.rain_data['year'] = datetime.datetime.now().year
+
+    def forecast_query(self):
+        #  https://swd.weatherflow.com/swd/rest/better_forecast?station_id={}&api_key={}&lat={}&lon={} 
+        path_str = "https://swd.weatherflow.com/swd/rest/better_forecast?"
+        path_str += "station_id=" + self.params.get('Station')
+        path_str += '&api_key=6c8c96f9-e561-43dd-b173-5198d8797e0a'
+        path_str += '&lat=' + str(self.latitude)
+        path_str += '&lon=' + str(self.longitude)
+        try:
+            c = requests.get(path_str)
+            try:
+                jdata = c.json()
+                c.close()
+            except Exception as e:
+                c.close()
+                LOGGER.error(str(e))
+                return
+
+            LOGGER.debug(jdata)
+
+        except Exception as e:
+            LOGGER.error(str(e))
+
 
     def heartbeat(self):
         LOGGER.debug('heartbeat hb={}'.format(self.hb))
