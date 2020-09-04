@@ -39,13 +39,20 @@ class ForecastNode(polyinterface.Node):
 
     def setDriver(self, driver, value):
         if ((driver == 'GV0' or driver == 'GV1') and self.units == "f"):
-            value = (value * 1.8) + 32  # convert to F
+            value = round((value * 1.8) + 32, 1)  # convert to F
 
         super(ForecastNode, self).setDriver(driver, value, report=True, force=True)
 
     def update(self, forecast):
         if 'day_num' in forecast:
-            self.setDriver('ST', (forecast['day_num'] + 1))
+            # 0 = monday (UOM should be 1)
+            # 1 = tuesday (UOM should be 2)
+            # 2 = wednesday (UOM should be 3)
+            # 3 = thursday (UOM should be 4)
+            # 4 = friday (UOM should be 5)
+            # 5 = saturday (UOM should be 6)
+            # 6 = sunday (UOM should be 0)
+            self.setDriver('ST', (forecast['day_num'] + 1) % 7)
         if 'air_temp_high' in forecast:
             self.setDriver('GV0', forecast['air_temp_high'])
         if 'air_temp_low' in forecast:
