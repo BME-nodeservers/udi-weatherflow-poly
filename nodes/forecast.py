@@ -52,7 +52,8 @@ class ForecastNode(polyinterface.Node):
             # 4 = friday (UOM should be 5)
             # 5 = saturday (UOM should be 6)
             # 6 = sunday (UOM should be 0)
-            self.setDriver('ST', (forecast['day_num'] + 1) % 7)
+            dt = datetime.date.fromtimestamp(forecast['day_start_local'])
+            self.setDriver('ST', dt.weekday() + 1)
         if 'air_temp_high' in forecast:
             self.setDriver('GV0', forecast['air_temp_high'])
         if 'air_temp_low' in forecast:
