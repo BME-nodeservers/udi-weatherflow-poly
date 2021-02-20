@@ -2,24 +2,19 @@
 
 The WeatherFlow node server has the following user configuration parameters:
 
-- ListenPort [required] : Port to listen on for WeatherFlow data. Default is port 50222.
-- Station [required]: Your WeatherFlow station ID. Used to query WeatherFlow for station information.
-- Air S/N [optional]: The serial number of the AIR device to collect data from.
-- Sky S/N [optional]: The serial number of the SKY device to collect data from.
-- Tempest S/N [optional]: The serial number of the Tempest device to collect data from.
-- Units [optional] : Display data in either 'metric', 'US', or 'UK' units.
-- AGL [optional]: Distance Air sensor is above ground level (in meters).
-- Elevation [optional] : The elevation, above sea level, at your station's location (in meters).
+- Token [required]: This is your API authorization token.  
+- ListenPort [required]: Port to listen on for WeatherFlow data. Default is port 50222.
+- Forecast [optional]: Station ID to get forecast data for.
+- [Station ID]  [required]:  At least one station id must be entered.
 
-The WeatherFlow station ID is used to query the WeatherFlow servers for 
-information about your station. When found, it will set the approprate
-devices serial numbers, units, AGL, and Elevation from the station data.
+You can enter multiple station id's. For each one, you need to specify
+if you want local or remote data.  Local data will use the UDP data
+broadcast from the hub (or hubs).  Remote will query the WeatherFlow
+server for the data at the short poll interval.
 
-If you are unable to connect to the WeatherFlow servers, the data may be
-entered manually.
+For each station ID entered, the node server will query WeatherFlow for
+the list of devices associated with the station and create a node for
+device found.
 
-TODO: At some point users will have to be authenticted to access the station
-data.  To authenticate go to https://tempestwx.com/settings/tokens and create
-an access token.  Enter that access token in the configuration here.  Note, 
-this is only needed to access data on the WeatherFlow servers.  The local UDP
-data stream from the hub will continue to work as before.
+If you specify a Forecast station id, a node will be created for each
+available daily forecast.

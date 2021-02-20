@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Polyglot v2 node server for WeatherFlow Weather Station data.
-Copyright (c) 2018,2019,2020 Robert Paauwe
+Polyglot v3 node server for WeatherFlow Weather Station data.
+Copyright (c) 2018,2019,2020,2021 Robert Paauwe
 """
-import polyinterface
+import udi_interface
 import sys
 import time
 import datetime
@@ -11,12 +11,11 @@ import json
 import math
 import threading
 
-LOGGER = polyinterface.LOGGER
+LOGGER = udi_interface.LOGGER
 
-class ForecastNode(polyinterface.Node):
+class ForecastNode(udi_interface.Node):
     id = 'forecast'
     units = 'metric'
-    hint = [1,11,7,0]
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 75},   # day
             {'driver': 'GV0', 'value': 0, 'uom': 4},   # high temp
@@ -25,23 +24,21 @@ class ForecastNode(polyinterface.Node):
             {'driver': 'GV18', 'value': 0, 'uom': 51}, # pop
             ]
 
+    def __init__(self, polyglot, primary, address, name):
+        super(ForecastNode, self).__init__(polyglot, primary, address, name)
+        self.units = None
+
+
     def SetUnits(self, u):
         self.units = u
-        if (u == 'c'):  # C
-            self.drivers[1]['uom'] = 4
-            self.drivers[2]['uom'] = 4
-        elif (u == 'uk'):  # C
-            self.drivers[1]['uom'] = 4
-            self.drivers[2]['uom'] = 4
-        elif (u == 'f'):   # F
-            self.drivers[1]['uom'] = 17
-            self.drivers[2]['uom'] = 17
 
     def setDriver(self, driver, value):
+        uom = 4
         if ((driver == 'GV0' or driver == 'GV1') and self.units == "f"):
             value = round((value * 1.8) + 32, 1)  # convert to F
+            uom = 17
 
-        super(ForecastNode, self).setDriver(driver, value, report=True, force=True)
+        super(ForecastNode, self).setDriver(driver, value, report=True, force=True, uom=uom)
 
     def update(self, forecast):
         if 'day_num' in forecast:
