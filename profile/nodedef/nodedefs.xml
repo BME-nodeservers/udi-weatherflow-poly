@@ -14,16 +14,81 @@
            </sends>
             <accepts>
               <cmd id="DISCOVER" />
-              <cmd id="REMOVE_NOTICES_ALL" />
-              <cmd id="UPDATE_PROFILE" />
-			  <cmd id="DEBUG">
-				  <p id="" editor="DEBUG" init="30" />
-			  </cmd>
             </accepts>
         </cmds>
     </nodeDef>
 
-    <!-- mynodetype -->
+    <nodeDef id="air" nodeType="139" nls="air">
+        <editors />
+        <sts>
+            <st id="CLITEMP" editor="I_TEMP" />
+            <st id="CLIHUM" editor="I_HUMIDITY" />
+            <st id="ATMPRES" editor="I_PRESSURE" />
+            <st id="BARPRES" editor="I_PRESSURE" />
+            <st id="GV1" editor="I_TREND" />
+            <st id="GV0" editor="I_TEMP" />
+            <st id="DEWPT" editor="I_TEMP" />
+            <st id="HEATIX" editor="I_TEMP" />
+            <st id="WINDCH" editor="I_TEMP" />
+            <st id="GV2" editor="I_STRIKES" />
+            <st id="DISTANC" editor="I_DISTANCE" />
+            <st id="BATLVL" editor="I_VOLTS" />
+        </sts>
+    </nodeDef>
+
+    <nodeDef id="sky" nodeType="139" nls="sky">
+        <editors />
+        <sts>
+            <st id="SPEED" editor="I_SPEED" />
+            <st id="WINDDIR" editor="I_DEGREE" />
+            <st id="GUST" editor="I_SPEED" />
+            <st id="GV1" editor="I_SPEED" />
+            <st id="RAINRT" editor="I_RAINRT" />
+            <st id="PRECIP" editor="I_RAIN" />
+            <st id="GV2" editor="I_RAIN" />
+            <st id="GV3" editor="I_RAIN" />
+            <st id="GV4" editor="I_RAIN" />
+            <st id="GV5" editor="I_RAIN" />
+            <st id="GV6" editor="I_RAIN" />
+            <st id="UV" editor="I_UV" />
+            <st id="SOLRAD" editor="I_RADIATION" />
+            <st id="LUMIN" editor="I_LUX" />
+            <st id="BATLVL" editor="I_VOLTS" />
+        </sts>
+    </nodeDef>
+
+    <nodeDef id="tempest" nodeType="139" nls="tempest">
+        <editors />
+        <sts>
+            <st id="CLITEMP" editor="I_TEMP" />
+            <st id="CLIHUM" editor="I_HUMIDITY" />
+            <st id="ATMPRES" editor="I_PRESSURE" />
+            <st id="BARPRES" editor="I_PRESSURE" />
+            <st id="GV0" editor="I_TEMP" />
+            <st id="DEWPT" editor="I_TEMP" />
+            <st id="HEATIX" editor="I_TEMP" />
+            <st id="WINDCH" editor="I_TEMP" />
+            <st id="GV1" editor="I_TREND" />
+            <st id="GV2" editor="I_STRIKES" />
+            <st id="DISTANC" editor="I_DISTANCE" />
+            <st id="SPEED" editor="I_SPEED" />
+            <st id="WINDDIR" editor="I_DEGREE" />
+            <st id="GUST" editor="I_SPEED" />
+            <st id="GV3" editor="I_DEGREE" />
+            <st id="GV4" editor="I_SPEED" />
+            <st id="RAINRT" editor="I_RAINRT" />
+            <st id="PRECIP" editor="I_RAIN" />
+            <st id="GV5" editor="I_RAIN" />
+            <st id="GV6" editor="I_RAIN" />
+            <st id="GV7" editor="I_RAIN" />
+            <st id="GV8" editor="I_RAIN" />
+            <st id="GV9" editor="I_RAIN" />
+            <st id="UV" editor="I_UV" />
+            <st id="SOLRAD" editor="I_RADIATION" />
+            <st id="LUMIN" editor="I_LUX" />
+        </sts>
+    </nodeDef>
+
 	<nodeDef id="hub0" nodeType="139" nls="HUB">
         <sts>
 			<st id="GV1" editor="I_VOLTS" />

@@ -2,17 +2,77 @@
 ND-WeatherFlow-NAME = WeatherFlow station
 ND-WeatherFlow-ICON = Weather
 CMD-ctl-DISCOVER-NAME = Re-Discover
-CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
-CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
-CMD-ctl-DEBUG-NAME = Log Level
 ST-ctl-ST-NAME = NodeServer Online
-ST-ctl-GV0-NAME = Air Battery
-ST-ctl-GV1-NAME = Sky Battery
 ST-ctl-GV2-NAME = Air RSSI
 ST-ctl-GV3-NAME = Sky RSSI
 ST-ctl-GV4-NAME = Hub Seconds Since Seen
 
-# mynodetype
+# air
+ND-air-NAME = Air
+ND-air-ICON = Weather
+ST-air-CLITEMP-NAME = Temperature
+ST-air-CLIHUM-NAME = Humidity
+ST-air-ATMPRES-NAME = Absolute Pressure
+ST-air-BARPRES-NAME = Relative Pressure
+ST-air-GV1-NAME = Pressure Trend
+ST-air-GV0-NAME = Apparent Temperature
+ST-air-DEWPT-NAME = Dew Point
+ST-air-HEATIX-NAME = Heat Index
+ST-air-WINDCH-NAME = Windchill
+ST-air-GV2-NAME = Strikes
+ST-air-DISTANC-NAME = Distance
+ST-air-BATLVL-NAME = Air Battery
+
+# sky
+ND-sky-NAME = Sky
+ND-sky-ICON = Weather
+ST-sky-SPEED-NAME = Wind Speed
+ST-sky-WINDDIR-NAME = Wind Direction
+ST-sky-GUST-NAME = Gust Speed
+ST-sky-GV3-NAME = Lull Speed
+ST-sky-RAINRT-NAME = Rain Rate
+ST-sky-PRECIP-NAME = Daily Rainfall
+ST-sky-GV2-NAME = Hourly Rainfall
+ST-sky-GV3-NAME = Weekly Rainfall
+ST-sky-GV4-NAME = Monthly Rainfall
+ST-sky-GV5-NAME = Yearly Rainfall
+ST-sky-GV6-NAME = Yesterday Rainfall
+ST-sky-UV-NAME = UV Index
+ST-sky-SOLRAD-NAME = Solar Radiation
+ST-sky-LUMIN-NAME = Illumination
+ST-sky-BATLVL-NAME = Sky Battery
+
+# tempest
+ND-tempest-NAME = Tempest
+ND-tempest-ICON = Weather
+ST-tempest-CLITEMP-NAME = Temperature
+ST-tempest-CLIHUM-NAME = Humidity
+ST-tempest-ATMPRES-NAME = Absolute Pressure
+ST-tempest-BARPRES-NAME = Relative Pressure
+ST-tempest-GV1-NAME = Pressure Trend
+ST-tempest-GV0-NAME = Apparent Temperature
+ST-tempest-DEWPT-NAME = Dew Point
+ST-tempest-HEATIX-NAME = Heat Index
+ST-tempest-WINDCH-NAME = Windchill
+ST-tempest-GV2-NAME = Strikes
+ST-tempest-DISTANC-NAME = Distance
+ST-tempest-WINDDIR-NAME = Wind Direction
+ST-tempest-GUST-NAME = Gust Speed
+ST-tempest-GV3-NAME = Gust Direction
+ST-tempest-GV4-NAME = Lull Speed
+ST-tempest-RAINRT-NAME = Rain Rate
+ST-tempest-PRECIP-NAME = Daily Rainfall
+ST-tempest-GV5-NAME = Hourly Rainfall
+ST-tempest-GV6-NAME = Weekly Rainfall
+ST-tempest-GV7-NAME = Monthly Rainfall
+ST-tempest-GV8-NAME = Yearly Rainfall
+ST-tempest-GV9-NAME = Yesterday Rainfall
+ST-tempest-UV-NAME = UV Index
+ST-tempest-SOLRAD-NAME = Solar Radiation
+ST-tempest-LUMIN-NAME = Illumination
+ST-tempest-BATLVL-NAME = Tempest Battery
+
+
 ND-hub0-NAME=Sensor Status
 ND-hub0-ICON=Input
 ND-hub1-NAME=Sensor Status

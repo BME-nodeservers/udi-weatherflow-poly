@@ -688,6 +688,8 @@ class Controller(udi_interface.Node):
         self.stop()
 
 
+    id = 'WeatherFlow'
+
     commands = {
         'DISCOVER': discover,
     }
