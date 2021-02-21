@@ -56,6 +56,7 @@ ST-tempest-HEATIX-NAME = Heat Index
 ST-tempest-WINDCH-NAME = Windchill
 ST-tempest-GV2-NAME = Strikes
 ST-tempest-DISTANC-NAME = Distance
+ST-tempest-SPEED-NAME = Wind Speed
 ST-tempest-WINDDIR-NAME = Wind Direction
 ST-tempest-GUST-NAME = Gust Speed
 ST-tempest-GV3-NAME = Gust Direction

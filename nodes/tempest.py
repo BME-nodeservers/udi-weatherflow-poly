@@ -189,7 +189,7 @@ class TempestNode(udi_interface.Node):
             wg = round(wg * 5 / 18, 2)
             uom = 40
         self.setDriver('SPEED', ws, uom=uom)
-        self.setDriver('GV1', wl, uom=uom)
+        self.setDriver('GV4', wl, uom=uom)
         self.setDriver('GUST', wg, uom=uom)
 
         # il, uv, sr, wd (no conversion)
@@ -197,5 +197,6 @@ class TempestNode(udi_interface.Node):
         self.setDriver('UV', uv)
         self.setDriver('SOLRAD', sr)
         self.setDriver('WINDDIR', wd)
+        self.setDriver('GV3', wd)
         self.setDriver('BATLVL', bv)
 
