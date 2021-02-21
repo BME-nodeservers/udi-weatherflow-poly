@@ -19,8 +19,8 @@ ST-air-GV0-NAME = Apparent Temperature
 ST-air-DEWPT-NAME = Dew Point
 ST-air-HEATIX-NAME = Heat Index
 ST-air-WINDCH-NAME = Windchill
-ST-air-GV2-NAME = Strikes
-ST-air-DISTANC-NAME = Distance
+ST-air-GV2-NAME = Lightning Strikes
+ST-air-DISTANC-NAME = Lightning Distance
 ST-air-BATLVL-NAME = Air Battery
 
 # sky
@@ -54,8 +54,8 @@ ST-tempest-GV0-NAME = Apparent Temperature
 ST-tempest-DEWPT-NAME = Dew Point
 ST-tempest-HEATIX-NAME = Heat Index
 ST-tempest-WINDCH-NAME = Windchill
-ST-tempest-GV2-NAME = Strikes
-ST-tempest-DISTANC-NAME = Distance
+ST-tempest-GV2-NAME = Lightning Strikes
+ST-tempest-DISTANC-NAME = Lightning Distance
 ST-tempest-SPEED-NAME = Wind Speed
 ST-tempest-WINDDIR-NAME = Wind Direction
 ST-tempest-GUST-NAME = Gust Speed
