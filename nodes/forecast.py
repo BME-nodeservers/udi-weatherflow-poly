@@ -46,7 +46,7 @@ class ForecastNode(udi_interface.Node):
             # 5 = saturday (UOM should be 6)
             # 6 = sunday (UOM should be 0)
             dt = datetime.date.fromtimestamp(forecast['day_start_local'])
-            self.setDriver('ST', dt.weekday() + 1, True, force, 75)
+            self.setDriver('ST', ((dt.weekday() + 1) % 7), True, force, 75)
         if 'air_temp_high' in forecast:
             if self.units == 'f':
                 value = round((forecast['air_temp_high'] * 1.8) + 32, 1)  # convert to F
