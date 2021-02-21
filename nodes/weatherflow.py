@@ -214,7 +214,7 @@ class Controller(udi_interface.Node):
         node = self.poly.getNode(device_id)
         node.update(jdata['obs'])
 
-    def create_device_node(self, station, device, units):
+    def create_device_node(self, station, device, units, elevation):
         """
           Create a device node.  There are 3 types of nodes:
             Tempest:
@@ -224,12 +224,16 @@ class Controller(udi_interface.Node):
         if device['device_type'] == 'AR':
             LOGGER.info('Add AIR device node {}'.format(device['serial_number']))
             node = air.AirNode(self.poly, self.address, device['device_id'], device['serial_number'])
+            # TODO: do we need to account for agl too?
+            node.elevation = elevation
         elif device['device_type'] == 'SK':
             LOGGER.info('Add SKY device node {}'.format(device['serial_number']))
             node = sky.SkyNode(self.poly, self.address, device['device_id'], device['serial_number'])
         elif device['device_type'] == 'ST':
             LOGGER.info('Add Tempest device node {}'.format(device['serial_number']))
             node = tempest.TempestNode(self.poly, self.address, device['device_id'], device['serial_number'])
+            # TODO: do we need to account for agl too?
+            node.elevation = elevation
         else:
             return
 
@@ -391,7 +395,7 @@ class Controller(udi_interface.Node):
                 for device in info['devices']:
                     remote = False
                     self.nodesCreated += 1
-                    self.create_device_node(station['id'], device, info['units'])
+                    self.create_device_node(station['id'], device, info['units'], info['elevation'])
                     if station['remote'].lower() == 'remote':
                         remote = True
                     self.deviceList[device['device_id']] = {'serial_number': device['serial_number'], 'type': device['device_type'], 'remote': remote}
