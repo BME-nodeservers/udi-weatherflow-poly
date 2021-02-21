@@ -44,35 +44,14 @@ class Controller(udi_interface.Node):
         self.RainData = Custom(polyglot, 'rain')
 
         self.deviceList = {}
-        self.stations = []
         self.isConfigured = False
 
         self.stopping = False
         self.stopped = True
         self.latitude = 0
         self.longitude = 0
-        self.rain_data = {
-                'hourly': 0,
-                'hour' : 0,
-                'daily': 0,
-                'day': 0,
-                'weekly': 0,
-                'week': 0,
-                'monthly': 0,
-                'month': 0,
-                'yearly': 0,
-                'year': 0,
-                'yesterday': 0,
-                'level': 30,
-                'station': '',
-                }
         self.hb = 0
         self.hub_timestamp = 0
-        self.tempest = False
-        #self.poly.onConfig(self.process_config)
-        #self.poly.onStop(self.my_stop)
-        self.devices = []
-        self.discovered = ""
         self.units = {
                 'temperature': 'c',
                 'wind': 'kph',
@@ -81,64 +60,6 @@ class Controller(udi_interface.Node):
                 'distance': 'km',
                 'other': 'metric',
                 }
-        """
-        self.params = node_funcs.NSParameters([{
-            'name': 'Station',
-            'default': 'set me',
-            'isRequired': True,
-            'notice': 'Station ID must be set',
-            },
-            {
-            'name': 'ListenPort',
-            'default': 50222,
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'Sky S/N',
-            'default': '',
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'Air S/N',
-            'default': '',
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'Tempest S/N',
-            'default': '',
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'Units',
-            'default': 'us',
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'Elevation',
-            'default': 0,
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'AGL',
-            'default': 0,
-            'isRequired': False,
-            'notice': '',
-            },
-            {
-            'name': 'Forecast Days',
-            'default': '0',
-            'isRequired': False,
-            'notice': '',
-            },
-            ])
-        """
-
         self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameterHandler)
         self.poly.subscribe(self.poly.START, self.start, self.address)
         self.poly.subscribe(self.poly.POLL, self.poll)
