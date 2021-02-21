@@ -427,19 +427,17 @@ class Controller(udi_interface.Node):
         #       LOGGER.info (self.nodes[node].name + ' is at index ' + node)
         LOGGER.info('WeatherFlow Node Server Started.')
 
-    def poll(self, longpoll):
+    def poll(self, polltype):
         """
           Use this to query the WF server via REST for any stations
           that are marked 'remote'.  
         """
-        for device in self.deviceList:
-            if self.deviceList[device]['remote']:
-                LOGGER.info('TODO: REST query for device {}'.format(device))
-                self.query_device(device)
-            else:
-                LOGGER.debug('skipping REST query for device {}'.format(device))
-
-        if longpoll:
+        if polltype == 'shortPoll':
+            for device in self.deviceList:
+                if self.deviceList[device]['remote']:
+                    LOGGER.info('TODO: REST query for device {}'.format(device))
+                    self.query_device(device)
+        else:
             self.heartbeat()
             self.forecast_query(self.Parameters['Forecast'])
 
