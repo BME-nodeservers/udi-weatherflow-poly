@@ -45,6 +45,8 @@ class Controller(udi_interface.Node):
 
         self.deviceList = {}
         self.isConfigured = False
+        self.nodesAdded = 1
+        self.nodesCreated = 1
 
         self.stopping = False
         self.stopped = True
@@ -63,8 +65,12 @@ class Controller(udi_interface.Node):
         self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameterHandler)
         self.poly.subscribe(self.poly.START, self.start, self.address)
         self.poly.subscribe(self.poly.POLL, self.poll)
+        self.poly.subscribe(self.poly.ADDNODEDONE, self.nodesDoneHandler)
         self.poly.ready()
         self.poly.addNode(self)
+
+    def nodesDoneHandler(self, node):
+        self.nodesAdded += 1
 
     def parameterHandler(self, params):
         """
@@ -336,6 +342,10 @@ class Controller(udi_interface.Node):
             # Wait for configuration.
             time.sleep(10)
 
+        while self.nodesAdded < self.nodesCreated:
+            # wait for all nodes to be added
+            time.sleep(10)
+
         LOGGER.info('Starting thread for UDP data')
         self.udp = threading.Thread(target = self.udp_data)
         self.udp.daemon = True
@@ -380,6 +390,7 @@ class Controller(udi_interface.Node):
                 self.units = info['units']
                 for device in info['devices']:
                     remote = False
+                    self.nodesCreated += 1
                     self.create_device_node(station['id'], device, info['units'])
                     if station['remote'].lower() == 'remote':
                         remote = True
@@ -392,6 +403,7 @@ class Controller(udi_interface.Node):
                 node = forecast.ForecastNode(self.poly, self.address, address, title)
                 node.SetUnits(self.units['temperature'])
                 self.poly.addNode(node)
+                self.nodesCreated += 1
             except Excepton as e:
                 LOGGER.error('Failed to create forecast node ' + title)
                 LOGGER.error(e)
