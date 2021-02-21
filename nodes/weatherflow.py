@@ -377,6 +377,7 @@ class Controller(udi_interface.Node):
             info = self.query_station(station['id'])
             if info is not None:
                 LOGGER.info('{} has {} devices.'.format(station['id'], len(info['devices'])))
+                self.units = info['units']
                 for device in info['devices']:
                     remote = False
                     self.create_device_node(station['id'], device, info['units'])
