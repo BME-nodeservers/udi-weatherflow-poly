@@ -380,7 +380,6 @@ class Controller(udi_interface.Node):
                 for device in info['devices']:
                     remote = False
                     self.create_device_node(station['id'], device, info['units'])
-                    # TODO: Do we need to keep a list of devices for UDP updates and Polling?
                     if station['remote'].lower() == 'remote':
                         remote = True
                     self.deviceList[device['device_id']] = {'serial_number': device['serial_number'], 'type': device['device_type'], 'remote': remote}
