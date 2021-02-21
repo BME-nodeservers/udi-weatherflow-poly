@@ -33,15 +33,7 @@ class ForecastNode(udi_interface.Node):
         LOGGER.info('Setting forecast units to {}'.format(u))
         self.units = u
 
-    def setDriver(self, driver, value):
-        uom = 4
-        if ((driver == 'GV0' or driver == 'GV1') and self.units == "f"):
-            value = round((value * 1.8) + 32, 1)  # convert to F
-            uom = 17
-
-        super(ForecastNode, self).setDriver(driver, value, report=True, force=True, uom=uom)
-
-    def update(self, forecast):
+    def update(self, forecast, force=False):
         """
         {'day_start_local': 1613980800, 'day_num': 22, 'month_num': 2, 'conditions': 'Clear', 'icon': 'clear-day', 'sunrise': 1613918795, 'sunset': 1613958540, 'air_temp_high': 18.0, 'air_temp_low': 6.0, 'precip_probability': 10, 'precip_icon': 'chance-rain', 'precip_type': 'rain'}
         """
@@ -54,13 +46,23 @@ class ForecastNode(udi_interface.Node):
             # 5 = saturday (UOM should be 6)
             # 6 = sunday (UOM should be 0)
             dt = datetime.date.fromtimestamp(forecast['day_start_local'])
-            self.setDriver('ST', dt.weekday() + 1)
+            self.setDriver('ST', dt.weekday() + 1, True, force, 75)
         if 'air_temp_high' in forecast:
-            self.setDriver('GV0', forecast['air_temp_high'])
+            if self.units == 'f':
+                value = round((forecast['air_temp_high'] * 1.8) + 32, 1)  # convert to F
+                uom = 17
+            else:
+                uom = 4
+            self.setDriver('GV0', value, True, force, uom)
         if 'air_temp_low' in forecast:
-            self.setDriver('GV1', forecast['air_temp_low'])
+            if self.units == 'f':
+                value = round((forecast['air_temp_low'] * 1.8) + 32, 1)  # convert to F
+                uom = 17
+            else:
+                uom = 4
+            self.setDriver('GV1', value, True, force, uom)
         if 'precip_probability' in forecast:
-            self.setDriver('POP', forecast['precip_probability'])
+            self.setDriver('POP', forecast['precip_probability'], True, force, 51)
         if 'conditions' in forecast:
             # convert conditions string to value
             if forecast['conditions'] == 'Clear':
@@ -94,5 +96,5 @@ class ForecastNode(udi_interface.Node):
             else:
                 condition_code = 14
 
-            self.setDriver('GV13', condition_code)
+            self.setDriver('GV13', condition_code, True, force, 25)
 
