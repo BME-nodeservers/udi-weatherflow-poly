@@ -66,11 +66,11 @@ class AirNode(udi_interface.Node):
 
         # temperatures t, fl, dp, hi, wc  (conversions)
         if self.units['temperature'] is not 'c':
-            t = (t * 1.8) + 32  # convert to F
-            fl = (fl * 1.8) + 32  # convert to F
-            dp = (dp * 1.8) + 32  # convert to F
-            hi = (hi * 1.8) + 32  # convert to F
-            wc = (wc * 1.8) + 32  # convert to F
+            t = round((t * 1.8) + 32, 2)  # convert to F
+            fl = round((fl * 1.8) + 32, 2)  # convert to F
+            dp = round((dp * 1.8) + 32, 2)  # convert to F
+            hi = round((hi * 1.8) + 32, 2)  # convert to F
+            wc = round((wc * 1.8) + 32, 2)  # convert to F
             uom = 17
         else:
             uom = 4
