@@ -342,7 +342,7 @@ class Controller(udi_interface.Node):
         self.udp.start()
 
         #TODO: forecast is for a station, which station should we use?
-        self.forecast_query(self.Parameters['Forecast'])
+        self.forecast_query(self.Parameters['Forecast'], True)
 
         #for node in self.nodes:
         #       LOGGER.info (self.nodes[node].name + ' is at index ' + node)
@@ -360,7 +360,7 @@ class Controller(udi_interface.Node):
                     self.query_device(device)
         else:
             self.heartbeat()
-            self.forecast_query(self.Parameters['Forecast'])
+            self.forecast_query(self.Parameters['Forecast'], False)
 
     def query(self):
         for node in self.nodes:
@@ -435,7 +435,7 @@ class Controller(udi_interface.Node):
 
 
 
-    def forecast_query(self, station):
+    def forecast_query(self, station, force=False):
 
         if station is None:
             return
@@ -474,7 +474,7 @@ class Controller(udi_interface.Node):
                 # call node update with forecast
                 node = self.poly.getNode(address)
                 if node is not None:
-                    node.update(forecast)
+                    node.update(forecast, force)
 
                 day += 1
                 #if day >= int(self.params.get('Forecast Days')):
