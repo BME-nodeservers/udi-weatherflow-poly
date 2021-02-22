@@ -6,8 +6,8 @@
     "install": "install.sh",
     "description": "Make WeatherFlow weather station data available to the ISY.",
     "notice": "see http://www.weatherflow.com for more information",
-    "shortPoll": "5",
-    "longPoll": "60",
+    "shortPoll": "60",
+    "longPoll": "600",
     "profile_version": "2.0.0",
 	"customParams": {
 		"Token": "",
@@ -25,8 +25,8 @@
 		}
 	],
 	"store": {
-		"developer": "bpaauwe@bobsplae.com",
-		"price": 0.00,
+		"developer": "bpaauwe@bobsplace.com",
+		"price": 10.00,
 		"recurring": 0,
 		"recurring_interval": "month",
 		"recurring_period": 0

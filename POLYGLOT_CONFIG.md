@@ -14,7 +14,15 @@ server for the data at the short poll interval.
 
 For each station ID entered, the node server will query WeatherFlow for
 the list of devices associated with the station and create a node for
-device found.
+device found. For example:
+
+4968 : local
+1398 : remote
+
+Configures the devices associated with station ID 4968 to get data from 
+hub UDP feed on the local network.  Devices associated with station ID
+1398 are configured to get data from the WeatherFlow server at shortPoll
+intervals.
 
 If you specify a Forecast station id, a node will be created for each
 available daily forecast.
