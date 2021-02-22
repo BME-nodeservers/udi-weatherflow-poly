@@ -57,7 +57,8 @@ class TempestNode(udi_interface.Node):
                 'daily': 0,
                 'weekly': 0,
                 'monthly': 0,
-                'yearly': 0
+                'yearly': 0,
+                'yesterday': 0
                 }
         
     def rain_update(self, current_rain):
@@ -69,6 +70,7 @@ class TempestNode(udi_interface.Node):
             self.rd['hourly'] = 0
         self.rd['hourly'] += current_rain
         if now.day != self.prev.day:
+            self.rd['yesterday'] = self.rd['daily']
             self.rd['daily'] = 0
         self.rd['daily'] += current_rain
         if w != self.prev.isocalendar()[1]:
@@ -89,6 +91,7 @@ class TempestNode(udi_interface.Node):
             self.setDriver('GV6', round(self.rd['weekly'] * 0.03937, 2), uom=uom)
             self.setDriver('GV7', round(self.rd['monthly'] * 0.03937, 2), uom=uom)
             self.setDriver('GV8', round(self.rd['yearly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV9', round(self.rd['yesterday'] * 0.03937, 2), uom=uom)
         else:
             uom = 82 # mm
             self.setDriver('PRECIP', self.rd['daily'], uom=uom)
@@ -96,6 +99,7 @@ class TempestNode(udi_interface.Node):
             self.setDriver('GV6', self.rd['weekly'], uom=uom)
             self.setDriver('GV7', self.rd['monthly'], uom=uom)
             self.setDriver('GV8', self.rd['yearly'], uom=uom)
+            self.setDriver('GV9', self.rd['yesterday'], uom=uom)
 
         self.prev = now
 

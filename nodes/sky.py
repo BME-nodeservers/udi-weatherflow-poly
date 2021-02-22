@@ -43,7 +43,8 @@ class SkyNode(udi_interface.Node):
                 'daily': 0,
                 'weekly': 0,
                 'monthly': 0,
-                'yearly': 0
+                'yearly': 0,
+                'yesterday': 0
                 }
         
     def rain_update(self, current_rain):
@@ -56,6 +57,7 @@ class SkyNode(udi_interface.Node):
         self.rd['hourly'] += current_rain
 
         if now.day != self.prev.day:
+            self.rd['yesterday'] = self.rd['daily']
             self.rd['daily'] = 0
         self.rd['daily'] += current_rain
 
@@ -79,6 +81,7 @@ class SkyNode(udi_interface.Node):
             self.setDriver('GV3', round(self.rd['weekly'] * 0.03937, 2), uom=uom)
             self.setDriver('GV4', round(self.rd['monthly'] * 0.03937, 2), uom=uom)
             self.setDriver('GV5', round(self.rd['yearly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV6', round(self.rd['yesterday'] * 0.03937, 2), uom=uom)
         else:
             uom = 82 # mm
             self.setDriver('PRECIP', self.rd['daily'], uom=uom)
@@ -86,6 +89,7 @@ class SkyNode(udi_interface.Node):
             self.setDriver('GV3', self.rd['weekly'], uom=uom)
             self.setDriver('GV4', self.rd['monthly'], uom=uom)
             self.setDriver('GV5', self.rd['yearly'], uom=uom)
+            self.setDriver('GV6', self.rd['yesterday'], uom=uom)
 
         self.prev = now
 
