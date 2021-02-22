@@ -32,8 +32,8 @@ class TempestNode(udi_interface.Node):
             {'driver': 'GV3', 'value': 0, 'uom': 76}, # gust direction
             {'driver': 'GV4', 'value': 0, 'uom': 32}, # lull
             {'driver': 'RAINRT', 'value': 0, 'uom': 46},  # rate
-            {'driver': 'PRECIP', 'value': 0, 'uom': 82}, # hourly
-            {'driver': 'GV5', 'value': 0, 'uom': 82}, # daily
+            {'driver': 'GV5', 'value': 0, 'uom': 82}, # hourly
+            {'driver': 'PRECIP', 'value': 0, 'uom': 82}, # daily
             {'driver': 'GV6', 'value': 0, 'uom': 82}, # weekly
             {'driver': 'GV7', 'value': 0, 'uom': 82}, # monthly
             {'driver': 'GV8', 'value': 0, 'uom': 82}, # yearly
@@ -51,8 +51,53 @@ class TempestNode(udi_interface.Node):
 
         self.elevation = 0  # needed for pressure conversion
         self.trend = []
-        self.rain = 0
-        self.rain_day = datetime.datetime.now().day
+        self.prev = datetime.datetime.now()
+        self.rd = {
+                'hourly': 0,
+                'daily': 0,
+                'weekly': 0,
+                'monthly': 0,
+                'yearly': 0
+                }
+        
+    def rain_update(self, current_rain):
+        # Update the accumulators and drivers
+        now = datetime.datetime.now()
+        (y, w, d) = now.isocalendar()
+
+        if now.hour != self.prev.hour:
+            self.rd['hourly'] = 0
+        self.rd['hourly'] += current_rain
+        if now.day != self.prev.day:
+            self.rd['daily'] = 0
+        self.rd['daily'] += current_rain
+        if w != self.prev.isocalendar()[1]:
+            self.rd['weekly'] = 0
+        self.rd['weekly'] += current_rain
+        if now.month != self.prev.month:
+            self.rd['monthly'] = 0
+        self.rd['monthly'] += current_rain
+        if now.year != self.prev.year:
+            self.rd['yearly'] = 0
+        self.rd['yearly'] += current_rain
+
+        # convert rain values if neccessary
+        if self.units['rain'] == 'in':
+            uom = 105  # inches
+            self.setDriver('PRECIP', round(self.rd['daily'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV5', round(self.rd['hourly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV6', round(self.rd['weekly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV7', round(self.rd['monthly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV8', round(self.rd['yearly'] * 0.03937, 2), uom=uom)
+        else:
+            uom = 82 # mm
+            self.setDriver('PRECIP', self.rd['daily'], uom=uom)
+            self.setDriver('GV5', self.rd['hourly'], uom=uom)
+            self.setDriver('GV6', self.rd['weekly'], uom=uom)
+            self.setDriver('GV7', self.rd['monthly'], uom=uom)
+            self.setDriver('GV8', self.rd['yearly'], uom=uom)
+
+        self.prev = now
 
     def rapid_wind(self, obs):
         tm = obs[0]
@@ -160,20 +205,14 @@ class TempestNode(udi_interface.Node):
         self.setDriver('GV2', ls)
 
         # ra == mm/minute (or interval)  (conversion necessary)
-        if self.rain_day != datetime.datetime.now().day:
-            self.rain_day = datetime.datetime.now().day
-            self.rain = 0
-        self.rain += ra
-
         if self.units['rain'] == 'in':
             uom = 24  # in/hr
             ra = round(ra * 0.03937, 2) * 60
-            self.rain = round(self.rain * 0.03937, 2)
         else:
             uom = 46 # mm/hr
             ra = ra * 60
         self.setDriver('RAINRT', ra)
-        self.setDriver('PRECIP', self.rain)
+        self.rain_update(ra)
 
         # ws, wl, wg (conversion)
         if self.units['wind'] == 'mph':

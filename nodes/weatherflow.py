@@ -13,20 +13,10 @@ import json
 import socket
 import math
 import threading
-import urllib3
 from nodes import air
 from nodes import sky
 from nodes import tempest
 from nodes import forecast
-#import node_funcs
-#from nodes import temperature
-#from nodes import humidity
-#from nodes import pressure
-#from nodes import rain
-#from nodes import wind
-#from nodes import light
-#from nodes import lightning
-#from nodes import hub
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
@@ -41,9 +31,9 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.Notices = Custom(polyglot, 'notices')
-        self.RainData = Custom(polyglot, 'rain')
 
         self.deviceList = {}
+        self.rainList = {}
         self.isConfigured = False
         self.nodesAdded = 1
         self.nodesCreated = 1
@@ -135,6 +125,8 @@ class Controller(udi_interface.Node):
         c.close()
 
         info = {}
+        rain_id = ''
+        rain_type = ''
         # What info do we want from the station query?
         #  jdata['stations'][0]['name'] 
         #  jdata['stations'][0]['latitude']
@@ -151,7 +143,6 @@ class Controller(udi_interface.Node):
               station UOM's come from station observation data so should
               we query that here?
             """
-            info['units'] = self.query_station_uom(station)
 
             if d['device_type'] != 'HB':
                 LOGGER.debug('Adding device {} {}'.format(d['device_id'], d['serial_number']))
@@ -161,11 +152,16 @@ class Controller(udi_interface.Node):
                             'device_type': d['device_type'],
                             'serial_number': d['serial_number']
                          })
+                if d['device_type'] == 'SK' or d['device_type'] == 'ST':
+                    rain_id = d['device_id']
+                    rain_type = d['device_type']
+
+        info['units'] = self.query_station_uom(station, rain_id, rain_type)
 
         #LOGGER.error('{}'.format(jdata))
         return info
 
-    def query_station_uom(self, station):
+    def query_station_uom(self, station, rain_id, rain_type):
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/station/' + station 
         path_str += '?api_key=' + self.Parameters.Token
@@ -193,6 +189,13 @@ class Controller(udi_interface.Node):
         LOGGER.info('daily rainfall = %f' % d_rain)
         p_rain = jdata['obs'][0]['precip_accum_local_yesterday']
         LOGGER.info('yesterday rainfall = %f' % p_rain)
+
+        # Do we have the device array in jdata?
+        if rain_type == 'SK' or rain_type == 'ST':
+            w_rain = self.get_weekly_rain(rain_id, rain_type)
+            m_rain, y_rain = self.get_monthly_rain(rain_id, rain_type)
+
+            self.rain_accumulation(rain_id, p_rain, d_rain, w_rain, m_rain, y_rain)
 
         return units
 
@@ -229,22 +232,24 @@ class Controller(udi_interface.Node):
         elif device['device_type'] == 'SK':
             LOGGER.info('Add SKY device node {}'.format(device['serial_number']))
             node = sky.SkyNode(self.poly, self.address, device['device_id'], device['serial_number'])
+            node.rd = self.rainList[device['device_id']]
         elif device['device_type'] == 'ST':
             LOGGER.info('Add Tempest device node {}'.format(device['serial_number']))
             node = tempest.TempestNode(self.poly, self.address, device['device_id'], device['serial_number'])
             # TODO: do we need to account for agl too?
             node.elevation = elevation
+            node.rd = self.rainList[device['device_id']]
         else:
             return
 
         node.units = units
         self.poly.addNode(node)
 
-    def get_monthly_rain(self):
+    def get_monthly_rain(self, device_id, device_type):
         # Do month by month query of rain info.
         today = datetime.datetime.today()
         y_rain = 0
-        for month in range(1,today.month+1):
+        for month in range(1, today.month+1):
             try:
                 m_rain = 0
                 # get epoch time for start of month and end of month
@@ -255,26 +260,23 @@ class Controller(udi_interface.Node):
 
                 # make request:
                 #  /swd/rest/observations/device/<id>?time_start=start&time_end=end&api_key=
-                path_str = '/swd/rest/observations/device/'
+                path_str = 'https://swd.weatherflow.com'
+                path_str += '/swd/rest/observations/device/'
                 path_str += str(device_id) + '?'
                 path_str += 'time_start=' + str(int(start_date.timestamp()))
                 path_str += '&time_end=' + str(int(end_date.timestamp()))
-                path_str += '&api_key=6c8c96f9-e561-43dd-b173-5198d8797e0a'
+                path_str += '&api_key=' + self.Parameters.Token
 
                 LOGGER.info('path = ' + path_str)
 
-                c = http.request('GET', path_str)
-                awdata = json.loads(c.data.decode('utf-8'))
+                c = requests.get(path_str)
+                awdata = c.json()
 
                 # we should now have an array of observations
                 for obs in awdata['obs']:
                     # for sky, index 3 is daily rain.  for tempest it is index 12
-                    if sky_found:
-                        m_rain += obs[3]
-                        y_rain += obs[3]
-                    elif tempest_found:
-                        m_rain += obs[12]
-                        y_rain += obs[12]
+                    m_rain += obs[3] if device_type == 'SK' else obs[12]
+                    y_rain += obs[3] if device_type == 'SK' else obs[12]
 
                 LOGGER.info('Month ' + str(month) + ' had rain = ' + str(m_rain))
 
@@ -285,27 +287,28 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('yearly rain total = ' + str(y_rain))
 
-    def get_weekly_rain(self):
+        return m_rain, y_rain
+
+    def get_weekly_rain(self, device_id, device_type):
         # Need to do a separate query for weekly rain
+        today = datetime.datetime.today()
         start_date = today - datetime.timedelta(days=7)
         end_date = today
-        path_str = '/swd/rest/observations/device/'
+        path_str = 'https://swd.weatherflow.com'
+        path_str += '/swd/rest/observations/device/'
         path_str += str(device_id) + '?'
         path_str += 'time_start=' + str(int(start_date.timestamp()))
         path_str += '&time_end=' + str(int(end_date.timestamp()))
-        path_str += '&api_key=6c8c96f9-e561-43dd-b173-5198d8797e0a'
+        path_str += '&api_key=' + self.Parameters.Token
 
         LOGGER.info('path = ' + path_str)
 
         try:
-            c = http.request('GET', path_str)
-            awdata = json.loads(c.data.decode('utf-8'))
+            c = requests.get(path_str)
+            awdata = c.json()
             w_rain = 0
             for obs in awdata['obs']:
-                if sky_found:
-                    w_rain += obs[3]
-                elif tempest_found:
-                    w_rain += obs[12]
+                w_rain += obs[3] if device_type == 'SK' else obs[12]
 
             c.close()
         except:
@@ -314,28 +317,19 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('weekly rain total = ' + str(w_rain))
 
-        http.close()
+        return w_rain
 
-        """
-        if y_rain > 0:
-            self.rain_data['yearly'] = y_rain
-            self.rain_data['year'] = datetime.datetime.now().year
-        if m_rain > 0:
-            self.rain_data['monthly'] = m_rain
-            self.rain_data['month'] = datetime.datetime.now().month
-        if w_rain > 0:
-            self.rain_data['weekly'] = w_rain
-            self.rain_data['week'] = datetime.datetime.now().isocalendar()[1]
-        if d_rain > 0:
-            self.rain_data['daily'] = d_rain
-            self.rain_data['day'] = datetime.datetime.now().day
-        if p_rain > 0:
-            self.rain_data['yesterday'] = p_rain
+    def rain_accumulation(self, device, p_rain, d_rain, w_rain, m_rain, y_rain):
+        rd = {
+                'hourly': 0,
+                'daily': d_rain,
+                'weekly': w_rain,
+                'monthly': m_rain,
+                'yearly': y_rain,
+                'yesterday': p_rain
+                }
 
-        self.rain_data['hourly'] = 0
-
-        self.params.save_params(self)
-        """
+        self.rainList[device] = rd
 
     def start(self):
         LOGGER.info('Starting WeatherFlow Node Server')

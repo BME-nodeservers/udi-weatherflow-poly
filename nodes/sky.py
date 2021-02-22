@@ -19,8 +19,8 @@ class SkyNode(udi_interface.Node):
             {'driver': 'GUST', 'value': 0, 'uom': 32}, # gust
             {'driver': 'GV1', 'value': 0, 'uom': 32}, # lull
             {'driver': 'RAINRT', 'value': 0, 'uom': 46},  # rate
-            {'driver': 'PRECIP', 'value': 0, 'uom': 82}, # hourly
-            {'driver': 'GV2', 'value': 0, 'uom': 82}, # daily
+            {'driver': 'GV2', 'value': 0, 'uom': 82}, # hourly
+            {'driver': 'PRECIP', 'value': 0, 'uom': 82}, # daily
             {'driver': 'GV3', 'value': 0, 'uom': 82}, # weekly
             {'driver': 'GV4', 'value': 0, 'uom': 82}, # monthly
             {'driver': 'GV5', 'value': 0, 'uom': 82}, # yearly
@@ -37,9 +37,58 @@ class SkyNode(udi_interface.Node):
         super(SkyNode, self).__init__(polyglot, primary, address, name)
 
         self.windspeed = 0
-        self.rain = 0
-        self.rain_day = datetime.datetime.now().day
+        self.prev = datetime.datetime.now()
+        self.rd = {
+                'hourly': 0,
+                'daily': 0,
+                'weekly': 0,
+                'monthly': 0,
+                'yearly': 0
+                }
         
+    def rain_update(self, current_rain):
+        # Update the accumulators and drivers
+        now = datetime.datetime.now()
+        (y, w, d) = now.isocalendar()
+
+        if now.hour != self.prev.hour:
+            self.rd['hourly'] = 0 
+        self.rd['hourly'] += current_rain
+
+        if now.day != self.prev.day:
+            self.rd['daily'] = 0
+        self.rd['daily'] += current_rain
+
+        if w != self.prev.isocalendar()[1]:
+            self.rd['weekly'] = 0
+        self.rd['weekly'] += current_rain
+
+        if now.month != self.prev.month:
+            self.rd['monthly'] = 0
+        self.rd['monthly'] += current_rain
+
+        if now.year != self.prev.year:
+            self.rd['yearly'] = 0
+        self.rd['yearly'] += current_rain
+
+        # convert rain values if neccessary
+        if self.units['rain'] == 'in':
+            uom = 105  # inches
+            self.setDriver('PRECIP', round(self.rd['daily'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV2', round(self.rd['hourly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV3', round(self.rd['weekly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV4', round(self.rd['monthly'] * 0.03937, 2), uom=uom)
+            self.setDriver('GV5', round(self.rd['yearly'] * 0.03937, 2), uom=uom)
+        else:
+            uom = 82 # mm
+            self.setDriver('PRECIP', self.rd['daily'], uom=uom)
+            self.setDriver('GV2', self.rd['hourly'], uom=uom)
+            self.setDriver('GV3', self.rd['weekly'], uom=uom)
+            self.setDriver('GV4', self.rd['monthly'], uom=uom)
+            self.setDriver('GV5', self.rd['yearly'], uom=uom)
+
+        self.prev = now
+
     def rapid_wind(self, obs):
         tm = obs[0]
         ws = obs[1] * (18 / 5)  # wind speed from m/s to kph
@@ -84,20 +133,15 @@ class SkyNode(udi_interface.Node):
             self.windspeed = ws
 
             # ra == mm/minute (or interval)  (conversion necessary)
-            if self.rain_day != datetime.datetime.now().day:
-                self.rain_day = datetime.datetime.now().day
-                self.rain = 0
-            self.rain += ra
+            self.rain_update(ra)
 
             if self.units['rain'] == 'in':
                 uom = 24  # in/hr
                 ra = round(ra * 0.03937, 2) * 60
-                self.rain = round(self.rain * 0.03937, 2)
             else:
                 uom = 46 # mm/hr
                 ra = ra * 60
             self.setDriver('RAINRT', ra)
-            self.setDriver('PRECIP', self.rain)
 
             # ws, wl, wg (conversion)
             if self.units['wind'] == 'mph':
