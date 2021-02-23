@@ -17,6 +17,7 @@ from nodes import air
 from nodes import sky
 from nodes import tempest
 from nodes import forecast
+from nodes import et3
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
@@ -37,6 +38,7 @@ class Controller(udi_interface.Node):
         self.isConfigured = False
         self.nodesAdded = 1
         self.nodesCreated = 1
+        self.eto = et3.etO()
 
         self.stopping = False
         self.stopped = True
@@ -155,6 +157,12 @@ class Controller(udi_interface.Node):
                 if d['device_type'] == 'SK' or d['device_type'] == 'ST':
                     rain_id = d['device_id']
                     rain_type = d['device_type']
+
+                if station == self.Parameters['Forecast']:
+                    self.eto.addDevice(d['serial_number'])
+                    self.eto.elevation = info['elevation']
+                    self.eto.latitude = jdata['stations'][0]['latitude']
+                    self.eto.day = datetime.datetime.now().timetuple().tm_yday
 
         info['units'] = self.query_station_uom(station, rain_id, rain_type)
 
@@ -366,6 +374,9 @@ class Controller(udi_interface.Node):
                 if self.deviceList[device]['remote']:
                     LOGGER.info('TODO: REST query for device {}'.format(device))
                     self.query_device(device)
+            if self.eto.day != datetime.datetime.now().timetuple().tm_yday:
+                LOGGER.info('ETo = {}'.format(self.eto.doETo()))
+                self.eto.reset(datetime.datetime.now().timetuple().tm_yday)
         else:
             self.heartbeat()
             self.forecast_query(self.Parameters['Forecast'], False)
@@ -538,6 +549,9 @@ class Controller(udi_interface.Node):
                     node.update(data['obs'])
                 else:
                     LOGGER.debug('device {} not local, ignore UDP data.'.format(d))
+
+            if self.eto.isDevice(data['serial_number']):
+                self.eto.addData(data)
 
     def send_rapid_wind(self, data):
         for d in self.deviceList:
