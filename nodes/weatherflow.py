@@ -609,18 +609,21 @@ class Controller(udi_interface.Node):
                 continue
             """
 
-            if (data["type"] == "obs_air"):
-                self.send_data(data)
+            try:
+                if (data["type"] == "obs_air"):
+                    self.send_data(data)
 
-            if (data["type"] == "obs_st"):
-                self.send_data(data)
+                if (data["type"] == "obs_st"):
+                    self.send_data(data)
 
-            if (data["type"] == "obs_sky"):
-                self.send_data(data)
+                if (data["type"] == "obs_sky"):
+                    self.send_data(data)
 
-            if (data["type"] == "rapid_wind"):
-                if self.Parameters['Rapid Wind'].lower() == 'true':
-                    self.send_rapid_wind(data)
+                if (data["type"] == "rapid_wind"):
+                    if self.Parameters['Rapid Wind'].lower() == 'true':
+                        self.send_rapid_wind(data)
+            except Exception as e:
+                LOGGER.error('Failed to send data to ISY: {}'.format(e))
 
 
             """
