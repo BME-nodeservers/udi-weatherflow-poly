@@ -1,72 +1,140 @@
 
 # weatherflow-polyglot
 
-This is the WeatherFlow Poly for the [Universal Devices ISY994i](https://www.universal-devices.com/residential/ISY) [Polyglot interface](http://www.universal-devices.com/developers/polyglot/docs/) with  [Polyglot V2](https://github.com/Einstein42/udi-polyglotv2) or [Polisy](https://www.universal-devices.com/product/polisy/)
-(c) 2018-2020 Robert Paauwe
-MIT license.
+This is a node server to pull weather data from WeatherFlow weather stations and
+make it available to a [Universal Devices ISY994i](https://www.universal-devices.com/residential/ISY)
+[Polyglot interface](http://www.universal-devices.com/developers/polyglot/docs/) with 
+Polyglot V3 running on a [Polisy](https://www.universal-devices.com/product/polisy/)
+
+(c) 2018-2021 Robert Paauwe
 
 This node server is intended to support the [WeatherFlow Smart Weather Station](http://www.weatherflow.com/).
-
-
-## Version 2.0 notice
-Version 2 is a major update with changes to the configuration options and 
-how the node server operates. The device serial numbers are used to select
-which device data to report. Also, support has been added for the new,
-soon to be released Tempest weather station.
+It supports both the current Tempest stations and older Air/Sky based stations. 
+Multiple stations can be configured and used.
 
 ## Installation
 
 1. Backup Your ISY in case of problems!
    * Really, do the backup, please
 2. Go to the Polyglot Store in the UI and install.
-3. From the Polyglot menu, Add NodeServer in Polyglot Web
-4. From the Polyglot dashboard, select WeatherFlow node server and configure (see configuration options below).
-5. Once configured, the WeatherFlow node server should update the ISY with the proper nodes and begin filling in the node data. Note that it can take up to 1 minute for data to appear.
-6. Restart the Admin Console so that it can properly display the new node server nodes.
+3. From the Polyglot dashboard, select WeatherFlow node server and configure (see configuration options below).
+4. Once configured, the WeatherFlow node server should update the ISY with the proper nodes and begin filling in the node data. Note that it can take up to 1 minute for data to appear.
+5. Restart the Admin Console so that it can properly display the new node server nodes.
 
 ### Node Settings
 The settings for this node are:
 
 #### Short Poll
-   * Not used
+   * Interval used to poll the WeatherFlow server for stations marked as 'remote'
 #### Long Poll
+   * Interval used to poll the WeatherFlow server for forecast data
    * Sends a heartbeat as DON/DOF
-#### Station
-   * The WeatherFlow station ID.
+#### Token
+   * Your personal access to token. See https://tempestwx.com/settings/tokens
 #### ListenPort
-   * Port to listen on for WeatherFlow data. Default is port 50222.
-#### Sky/Air/Tempest Serial Numbers
-   * Specifies the specific sensor devices to monitor. Currently only one
-     station can be monitored. This may be a station with a single Air and a
-	 Single Sky or a station with a single Tempest.
-#### AGL
-   * Height of the Air or Tempest above ground level.
-#### Elevation
-   * Elevation of the location where the station is sited.
-#### Units
-   * Display data in either 'metric', 'US', or 'UK' units.
+   * Port to listen on for WeatherFlow data. Default is port 50222
+#### Rapid Wind
+   * Enable or disable the sending of rapid wind data to the ISY.  Set to 'true' to enable.
+   * Rapid wind data is collected every 3 seconds  
+   * Rapid wind data is only available for stations configured as 'local'
+#### Forecast
+   * Specifies the station id used for forecast data.
+   * If not set, no forecast data will be collected and not evaptrasnspiration calculations will done
+#### Stations
+   * A separate key/value for each station you want to collect data from
+   * The key is the station id number
+   * The value must be either 'local' or 'remote'
+   * 'local' - the data comes from the hub UDP feed on your local network
+   * 'remote' - the data comes from the WeatherFlow server at Short Poll intervals
 
+## Node substitution variables
+### Parent node
+ * sys.node.controller.ST     (Node server online/offline)
+ * sys.node.controller.ETO    (Evaptranspiration for yesterday)
+ * sys.node.controller.GV4    (Number of seconds since an update was received from a station)
+
+### Air node
+ * sys.node.[deviceid].CLITEMP   (Current temperature)
+ * sys.node.[deviceid].CLIHUM    (Current humidity)
+ * sys.node.[deviceid].ATMPRES   (Current sea level pressure)
+ * sys.node.[deviceid].BARPRES   (Current station pressure)
+ * sys.node.[deviceid].GV1       (Current pressure trend)
+ * sys.node.[deviceid].GV0       (Current feels like temperature)
+ * sys.node.[deviceid].DEWPT     (Current dewpoint)
+ * sys.node.[deviceid].HEATIX    (Current heat index)
+ * sys.node.[deviceid].WINDCH    (Current windchill)
+ * sys.node.[deviceid].GV2       (Current lightning strike count)
+ * sys.node.[deviceid].DISTANC   (Current lightning strike distance)
+ * sys.node.[deviceid].BATLVL    (Current air battery voltage)
+
+### sky node
+ * sys.node.[deviceid].SPEED     (Current wind speed)
+ * sys.node.[deviceid].WINDDIR   (Current wind direction)
+ * sys.node.[deviceid].GUST      (Current gust speed)
+ * sys.node.[deviceid].GV1       (Current lull speed)
+ * sys.node.[deviceid].RAINRT    (Current rain rate)
+ * sys.node.[deviceid].PRECIP    (Current daily rain)
+ * sys.node.[deviceid].GV2       (Current hourly rain)
+ * sys.node.[deviceid].GV3       (Current weekly rain)
+ * sys.node.[deviceid].GV4       (Current monthly rain)
+ * sys.node.[deviceid].GV5       (Current yearly rain)
+ * sys.node.[deviceid].GV6       (Current yesterday's rain)
+ * sys.node.[deviceid].UV        (Current UV index)
+ * sys.node.[deviceid].SOLRAD    (Current solar radiataion)
+ * sys.node.[deviceid].LUMIN     (Current brightness)
+ * sys.node.[deviceid].BATLVL    (Current sky battery voltage)
+
+### tempest node
+ * sys.node.[deviceid].CLITEMP   (Current temperature)
+ * sys.node.[deviceid].CLIHUM    (Current humidity)
+ * sys.node.[deviceid].ATMPRES   (Current sea level pressure)
+ * sys.node.[deviceid].BARPRES   (Current station pressure)
+ * sys.node.[deviceid].GV1       (Current pressure trend)
+ * sys.node.[deviceid].GV0       (Current feels like temperature)
+ * sys.node.[deviceid].DEWPT     (Current dewpoint)
+ * sys.node.[deviceid].HEATIX    (Current heat index)
+ * sys.node.[deviceid].WINDCH    (Current windchill)
+ * sys.node.[deviceid].GV2       (Current lightning strike count)
+ * sys.node.[deviceid].DISTANC   (Current lightning strike distance)
+ * sys.node.[deviceid].SPEED     (Current wind speed)
+ * sys.node.[deviceid].WINDDIR   (Current wind direction)
+ * sys.node.[deviceid].GUST      (Current gust speed)
+ * sys.node.[deviceid].GV3       (Current gust direction)
+ * sys.node.[deviceid].GV4       (Current lull speed)
+ * sys.node.[deviceid].RAINRT    (Current rain rate)
+ * sys.node.[deviceid].PRECIP    (Current daily rain)
+ * sys.node.[deviceid].GV5       (Current hourly rain)
+ * sys.node.[deviceid].GV6       (Current weekly rain)
+ * sys.node.[deviceid].GV7       (Current monthly rain)
+ * sys.node.[deviceid].GV8       (Current yearly rain)
+ * sys.node.[deviceid].GV9       (Current yesterday's rain)
+ * sys.node.[deviceid].UV        (Current UV index)
+ * sys.node.[deviceid].SOLRAD    (Current solar radiataion)
+ * sys.node.[deviceid].LUMIN     (Current brightness)
+ * sys.node.[deviceid].BATLVL    (Current tempest battery voltage)
+
+### forecast node
+ * sys.node.[forecast_x].ST      (day of week)
+ * sys.node.[forecast_x].GV0     (daily predicted high temperature)
+ * sys.node.[forecast_x].GV1     (daily predicted low temperature)
+ * sys.node.[forecast_x].GV13    (expected weather conditions)
+ * sys.node.[forecast_x].GV18    (chance of precipitation)
 
 ## Requirements
 
-1. Polyglot V2 itself should be run on Raspian Stretch.
-  To check your version, ```cat /etc/os-release``` and the first line should look like
-  ```PRETTY_NAME="Raspbian GNU/Linux 9 (stretch)"```. It is possible to upgrade from Jessie to
-  Stretch, but I would recommend just re-imaging the SD card.  Some helpful links:
-   * https://www.raspberrypi.org/blog/raspbian-stretch/
-   * https://linuxconfig.org/raspbian-gnu-linux-upgrade-from-jessie-to-raspbian-stretch-9
-2. ISY firmware 5.0.x or later.
-
-# Upgrading
-
-Open the Polyglot web page, go to nodeserver store and click "Update" for "WeatherFlow".
-
-Then restart the WeatherFlow nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
-
-The WeatherFlow nodeserver keeps track of the version number and when a profile rebuild is necessary.  The profile/version.txt will contain the WeatherFlow profile_version which is updated in server.json when the profile should be rebuilt.
+1. Polyglot V3.
+2. ISY firmware 5.3.x or later.
+3. A WeatherFlow weather station and assocated account
 
 # Release Notes
-
+- 3.0.0 02/23/2021
+  - Full redsign with new node layout
+  - Support for multiple stations
+  - Support for daily forecasts
+  - Support for evaptranspiration caluclation
+  - Support for rapid wind events
+  - Support both local and remote data
+  - Support for personal access token
 - 2.0.9 07/21/2020
   - Round values to 3 decimal places when doing metric conversions.
   - Skip bad/corrupt device records when querying WF server.

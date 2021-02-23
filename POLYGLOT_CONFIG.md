@@ -4,8 +4,9 @@ The WeatherFlow node server has the following user configuration parameters:
 
 - Token [required]: This is your API authorization token.  
 - ListenPort [required]: Port to listen on for WeatherFlow data. Default is port 50222.
+- Rapid Wind [required]: Report rapid wind events, true or false.
 - Forecast [optional]: Station ID to get forecast data for.
-- [Station ID]  [required]:  At least one station id must be entered.
+- [Station ID] [required]:  At least one station id must be entered.
 
 You can enter multiple station id's. For each one, you need to specify
 if you want local or remote data.  Local data will use the UDP data
@@ -26,3 +27,7 @@ intervals.
 
 If you specify a Forecast station id, a node will be created for each
 available daily forecast.
+
+To get Evaptranspiration calculations for each day, you must set a 
+"Forecast" station id.  The calculation will be based on the data
+reported by that station's devices.
