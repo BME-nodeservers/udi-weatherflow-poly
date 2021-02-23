@@ -136,6 +136,11 @@ class Controller(udi_interface.Node):
 
         c.close()
 
+        if not 'stations' in jdata:
+            LOGGER.error('Invalid station ID: {}'.format(station))
+            self.Notices['invalid'] = 'Station ID {} is invalid.'.format(station)
+            return None
+
         info = {}
         rain_id = ''
         rain_type = ''
