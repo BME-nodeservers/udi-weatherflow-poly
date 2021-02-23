@@ -12,7 +12,8 @@
 	"customParams": {
 		"Token": "",
 		"ListenPort": 50222,
-		"Forecast": 0
+		"Forecast": 0,
+		"Rapid Wind": "false"
 	},
     "credits": [
     	{

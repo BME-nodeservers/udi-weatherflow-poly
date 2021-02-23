@@ -73,6 +73,7 @@ class Controller(udi_interface.Node):
           server) and a list of stations.
         """
         validToken = False
+        validWind = False
         stationList = []
         self.isConfigured = False
         self.Parameters.load(params)
@@ -87,6 +88,9 @@ class Controller(udi_interface.Node):
         else:
             LOGGER.error('Token not defined in parameters')
 
+        if self.Parameters['Rapid Wind'] is not None:
+            validWind = True
+
         # What format for station names?  Just look at key names?  
         # TODO: should station value be local/remote?
         for st in self.Parameters:
@@ -97,9 +101,12 @@ class Controller(udi_interface.Node):
                 continue
             if st == 'Forecast':
                 continue
+            if st == 'Rapid Wind':
+                continue
+
             stationList.append({'id': st, 'remote': self.Parameters[st]})
 
-        if validToken and len(stationList) > 0:
+        if validToken and len(stationList) > 0 and validWind:
             self.Notices.clear()
             self.isConfigured = True
             self.discover(stationList)
@@ -110,6 +117,9 @@ class Controller(udi_interface.Node):
             if len(stationList) == 0:
                 LOGGER.warning('Please enter at least one station ID')
                 self.Notices['stations'] = 'Please enter at least one station ID'
+            if not validWind:
+                LOGGER.warning('Please set rapid wind to true or false')
+                self.Notices['stations'] = 'Please set Rapid Wind to true or false'
 
 
     def query_station(self, station):
@@ -609,7 +619,8 @@ class Controller(udi_interface.Node):
                 self.send_data(data)
 
             if (data["type"] == "rapid_wind"):
-                self.send_rapid_wind(data)
+                if self.Parameters['Rapid Wind'].lower() == 'true':
+                    self.send_rapid_wind(data)
 
 
             """
