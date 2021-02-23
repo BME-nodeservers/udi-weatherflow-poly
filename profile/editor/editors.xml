@@ -23,6 +23,10 @@
 	<editor id="I_SENSOR_TRIGGER">
 		<range uom="25" subset="0,1" nls="EN_SENSOR_TRIGGER" />
 	</editor>
+	<editor id="I_ETO">
+		<range uom="106" min="0" max="100" prec="3" />
+		<range uom="120" min="0" max="100" prec="3" />
+	</editor>
 	<editor id="I_TEMP">
 		<range uom="4" min="-50" max="75" step="0.5" prec="1" />
 		<range uom="17" min="-50" max="150" step="1" prec="1" />

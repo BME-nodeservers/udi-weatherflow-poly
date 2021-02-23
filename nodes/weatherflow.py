@@ -375,7 +375,16 @@ class Controller(udi_interface.Node):
                     LOGGER.info('TODO: REST query for device {}'.format(device))
                     self.query_device(device)
             if self.eto.day != datetime.datetime.now().timetuple().tm_yday:
-                LOGGER.info('ETo = {}'.format(self.eto.doETo()))
+                eto = self.eto.doETo()
+                # Value returned is in mm/day.  If self.units['rain'] == 'in'
+                # then we need to convert this to inches/day.
+                LOGGER.info('Yesterday\'s ETo = {}'.format(eto))
+                if self.units['rain'] == 'in':
+                    uom = 120
+                    eto = round(eto * 0.03937, 3)
+                else:
+                    uom = 106
+                self.setDriver('ETO', eto, uom=uom)
                 self.eto.reset(datetime.datetime.now().timetuple().tm_yday)
         else:
             self.heartbeat()
@@ -550,8 +559,8 @@ class Controller(udi_interface.Node):
                 else:
                     LOGGER.debug('device {} not local, ignore UDP data.'.format(d))
 
-            if self.eto.isDevice(data['serial_number']):
-                self.eto.addData(data)
+        if self.eto.isDevice(data['serial_number']):
+            self.eto.addData(data)
 
     def send_rapid_wind(self, data):
         for d in self.deviceList:
@@ -640,9 +649,8 @@ class Controller(udi_interface.Node):
     # Hub status information here: battery and rssi values.
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
-            {'driver': 'GV2', 'value': 0, 'uom': 25},  # Air RSSI
-            {'driver': 'GV3', 'value': 0, 'uom': 25},  # Sky RSSI
-            {'driver': 'GV4', 'value': 0, 'uom': 57}   # Hub seconds since seen
+            {'driver': 'GV4', 'value': 0, 'uom': 57},   # Hub seconds since seen
+            {'driver': 'ETO', 'value': 0, 'uom': 106}   # Yesterday's etO
             ]
 
 

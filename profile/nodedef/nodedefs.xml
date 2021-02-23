@@ -6,6 +6,7 @@
         <sts>
 			<st id="ST" editor="bool" />
 			<st id="GV4" editor="I_SECONDS" />
+			<st id="ETO" editor="I_ETO" />
 		</sts>
         <cmds>
            <sends>

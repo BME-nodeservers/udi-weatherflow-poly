@@ -6,6 +6,7 @@ ST-ctl-ST-NAME = NodeServer Online
 ST-ctl-GV2-NAME = Air RSSI
 ST-ctl-GV3-NAME = Sky RSSI
 ST-ctl-GV4-NAME = Hub Seconds Since Seen
+ST-ctl-ETO-NAME = Yesterday's etO
 
 # air
 ND-air-NAME = Air
