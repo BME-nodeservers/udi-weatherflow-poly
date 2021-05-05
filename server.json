@@ -27,9 +27,11 @@
 	],
 	"store": {
 		"developer": "bpaauwe@bobsplace.com",
-		"price": 10.00,
-		"recurring": 0,
-		"recurring_interval": "month",
-		"recurring_period": 0
+		"purchaseOptions": [
+			{
+				"price": 10.00,
+				"inPerpetual": true
+			}
+		]
 	}
 }
