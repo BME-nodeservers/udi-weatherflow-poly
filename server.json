@@ -30,7 +30,7 @@
 		"purchaseOptions": [
 			{
 				"price": 10.00,
-				"inPerpetual": true
+				"isPerpetual": true
 			}
 		]
 	}
