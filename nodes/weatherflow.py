@@ -384,6 +384,9 @@ class Controller(udi_interface.Node):
           Use this to query the WF server via REST for any stations
           that are marked 'remote'.  
         """
+        if not self.isConfigured:
+            return
+
         if polltype == 'shortPoll':
             for device in self.deviceList:
                 if self.deviceList[device]['remote']:

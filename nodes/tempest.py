@@ -167,7 +167,7 @@ class TempestNode(udi_interface.Node):
             LOGGER.error('  At: ' + str(tb.tb_lineno));
 
         # temperatures t, fl, dp, hi, wc  (conversions)
-        if self.units['temperature'] is not 'c':
+        if self.units['temperature'] != 'c':
             t = round((t * 1.8) + 32, 2)  # convert to F
             fl = round((fl * 1.8) + 32, 2)  # convert to F
             dp = round((dp * 1.8) + 32, 2)  # convert to F
