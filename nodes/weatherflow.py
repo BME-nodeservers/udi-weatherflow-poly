@@ -247,6 +247,11 @@ class Controller(udi_interface.Node):
             Sky:
             Air:
         """
+
+        if self.poly.getNode(device['serial_number']) is not None:
+            # Already exists, don't create it
+            return
+
         if device['device_type'] == 'AR':
             LOGGER.info('Add AIR device node {}'.format(device['serial_number']))
             node = air.AirNode(self.poly, self.address, device['device_id'], device['serial_number'])
@@ -267,6 +272,7 @@ class Controller(udi_interface.Node):
 
         node.units = units
         self.poly.addNode(node)
+        self.nodesCreated += 1
 
     def get_monthly_rain(self, device_id, device_type):
         # Do month by month query of rain info.
@@ -426,23 +432,24 @@ class Controller(udi_interface.Node):
                 self.units = info['units']
                 for device in info['devices']:
                     remote = False
-                    self.nodesCreated += 1
                     self.create_device_node(station['id'], device, info['units'], info['elevation'])
                     if station['remote'].lower() == 'remote':
                         remote = True
                     self.deviceList[device['device_id']] = {'serial_number': device['serial_number'], 'type': device['device_type'], 'remote': remote}
 
-        for day in range(0, 10):
-            address = 'forecast_' + str(day)
-            title = 'Forecast ' + str(day)
-            try:
-                node = forecast.ForecastNode(self.poly, self.address, address, title)
-                node.SetUnits(self.units['temperature'])
-                self.poly.addNode(node)
-                self.nodesCreated += 1
-            except Excepton as e:
-                LOGGER.error('Failed to create forecast node ' + title)
-                LOGGER.error(e)
+        if self.Parameters['Forecast'] != 0:
+            for day in range(0, 10):
+                address = 'forecast_' + str(day)
+                title = 'Forecast ' + str(day)
+                try:
+                    if not self.poly.getNode(address):
+                        node = forecast.ForecastNode(self.poly, self.address, address, title)
+                        node.SetUnits(self.units['temperature'])
+                        self.poly.addNode(node)
+                        self.nodesCreated += 1
+                except Excepton as e:
+                    LOGGER.error('Failed to create forecast node ' + title)
+                    LOGGER.error(e)
 
         LOGGER.info('Finished discovery')
 
@@ -485,7 +492,7 @@ class Controller(udi_interface.Node):
 
     def forecast_query(self, station, force=False):
 
-        if station is None:
+        if station is None or station == 0:
             return
 
         #  https://swd.weatherflow.com/swd/rest/better_forecast?station_id={}&api_key={}&lat={}&lon={} 
