@@ -127,6 +127,10 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.2 11/02/2021
+  - Fix the lighting strike editor and UOM
+- 3.0.1 10/31/2021
+  - Don't try and poll if the node server isn't configured.
 - 3.0.0 02/23/2021
   - Full redsign with new node layout
   - Support for multiple stations
