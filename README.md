@@ -127,6 +127,9 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.3 11/02/2021
+  - Conditionally create forecast nodes.
+  - Only calculate ETo if we have data.
 - 3.0.2 11/02/2021
   - Fix the lighting strike editor and UOM
 - 3.0.1 10/31/2021
