@@ -52,6 +52,9 @@
 	<editor id="I_SECONDS">
 		<range uom="57" min="0" max="20000000" prec="0" />
 	</editor>
+	<editor id="I_STRIKES">
+		<range uom="56" min="0" max="200000" prec="0" />
+	</editor>
 	<editor id="DAY">
 		<range uom="75" min="0" max="6" prec="0" />
 	</editor>

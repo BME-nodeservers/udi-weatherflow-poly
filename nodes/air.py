@@ -23,7 +23,7 @@ class AirNode(udi_interface.Node):
             {'driver': 'HEATIX', 'value': 0, 'uom': 17},   # heat index
             {'driver': 'WINDCH', 'value': 0, 'uom': 17},   # windchill
             {'driver': 'GV1', 'value': 0, 'uom': 25},      # pressure trend
-            {'driver': 'GV2', 'value': 0, 'uom': 25},      # lightning Strikes
+            {'driver': 'GV2', 'value': 0, 'uom': 56},      # lightning Strikes
             {'driver': 'DISTANC', 'value': 0, 'uom': 83},  # lightning Distance
             {'driver': 'BATLVL', 'value': 0, 'uom': 72},   # battery
 
