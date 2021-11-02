@@ -119,6 +119,7 @@ def calc_solar_radiation(t_min, t_max, lat, declination, julian_day):
 
     Ra = 24.0 / math.pi * 4.92 * Dr * (omega * math.sin(lat) * math.sin(declination) + math.cos(lat) * math.cos(declination) * math.sin(omega))
 
+    LOGGER.error('BOB: {} {} {}'.format(t_max, t_min, Ra))
     Rs = 0.17 * math.sqrt(t_max - t_min) * Ra
 
     return Rs
@@ -319,6 +320,7 @@ class etO(object):
         self.canopy = 0.26
         self.day = 0
         self.devices = []
+        self.valid = False
 
     def reset(self, day):
         self.temp_max = 0
@@ -328,9 +330,11 @@ class etO(object):
         self.ws_max = 0
         self.ws_min = 1000
         self.day = day
+        self.valid = False
         
     def addDevice(self, serial_num):
         self.devices.append(serial_num)
+        self.valid = True
 
     def isDevice(self, serial_num):
         if serial_num in self.devices:
@@ -353,6 +357,8 @@ class etO(object):
         self.ws_min = wind if wind < self.ws_min else self.ws_min
 
     def doETo(self):
+        if not self.valid:
+            return 0
         return evapotranspriation(self.temp_max, self.temp_min, None, self.WindSpeed(), self.elevation, self.rh_max, self.rh_min, self.latitude, self.canopy, self.day)
 
 
