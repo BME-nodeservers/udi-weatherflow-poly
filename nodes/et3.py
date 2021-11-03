@@ -119,7 +119,6 @@ def calc_solar_radiation(t_min, t_max, lat, declination, julian_day):
 
     Ra = 24.0 / math.pi * 4.92 * Dr * (omega * math.sin(lat) * math.sin(declination) + math.cos(lat) * math.cos(declination) * math.sin(omega))
 
-    LOGGER.error('BOB: {} {} {}'.format(t_max, t_min, Ra))
     Rs = 0.17 * math.sqrt(t_max - t_min) * Ra
 
     return Rs
