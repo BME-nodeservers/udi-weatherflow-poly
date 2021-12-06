@@ -17,8 +17,13 @@ For each station ID entered, the node server will query WeatherFlow for
 the list of devices associated with the station and create a node for
 device found. For example:
 
-4968 : local
-1398 : remote
+click "Add Custom Parameter"
+
+key = 4968
+value = local
+
+key = 1398
+value = remote
 
 Configures the devices associated with station ID 4968 to get data from 
 hub UDP feed on the local network.  Devices associated with station ID
