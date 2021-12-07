@@ -14,7 +14,6 @@
              <cmd id="DOF" />
            </sends>
             <accepts>
-              <cmd id="DISCOVER" />
             </accepts>
         </cmds>
     </nodeDef>

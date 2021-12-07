@@ -672,7 +672,6 @@ class Controller(udi_interface.Node):
     id = 'WeatherFlow'
 
     commands = {
-        'DISCOVER': discover,
     }
 
     # Hub status information here: battery and rssi values.
