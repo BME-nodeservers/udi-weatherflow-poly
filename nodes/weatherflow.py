@@ -198,6 +198,12 @@ class Controller(udi_interface.Node):
 
         c.close()
 
+        if 'status' in jdata:
+            if 'status_code' in jdata['status']:
+                if jdata['status']['status_code'] != 0:
+                    LOGGER.error('Error querying station {} information:'.format(station, jdata['status']['status_message']))
+                    return None
+
         units = {}
         units['temperature'] = jdata['station_units']['units_temp']
         units['wind'] = jdata['station_units']['units_wind']
@@ -236,6 +242,12 @@ class Controller(udi_interface.Node):
             return None
 
         c.close()
+
+        if 'status' in jdata:
+            if 'status_code' in jdata['status']:
+                if jdata['status']['status_code'] != 0:
+                    LOGGER.error('Error querying device {}:'.format(device_id, jdata['status']['status_message']))
+                    return None
 
         node = self.poly.getNode(device_id)
         node.update(jdata['obs'])
