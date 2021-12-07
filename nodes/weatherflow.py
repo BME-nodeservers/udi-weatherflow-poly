@@ -415,8 +415,8 @@ class Controller(udi_interface.Node):
             self.forecast_query(self.Parameters['Forecast'], False)
 
     def query(self):
-        for node in self.nodes:
-            self.nodes[node].reportDrivers()
+        for node in self.poly.nodes():
+            node.reportDrivers()
 
     def discover(self, stationList):
         """
