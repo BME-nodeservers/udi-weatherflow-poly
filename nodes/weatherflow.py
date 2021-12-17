@@ -447,7 +447,7 @@ class Controller(udi_interface.Node):
                     self.create_device_node(station['id'], device, info['units'], info['elevation'])
                     if station['remote'].lower() == 'remote':
                         remote = True
-                    self.deviceList[device['device_id']] = {'serial_number': device['serial_number'], 'type': device['device_type'], 'remote': remote}
+                    self.deviceList[device['device_id']] = {'serial_number': device['serial_number'], 'type': device['device_type'], 'remote': remote, 'first': True}
 
         if self.Parameters['Forecast'] != 0:
             for day in range(0, 10):
@@ -592,7 +592,8 @@ class Controller(udi_interface.Node):
             if device['serial_number'] == data['serial_number']:
                 if not device['remote']:
                     node = self.poly.getNode(d)
-                    node.update(data['obs'])
+                    node.update(data['obs'], d['first'])
+                    d['first'] = False
                 else:
                     LOGGER.debug('device {} not local, ignore UDP data.'.format(d))
 

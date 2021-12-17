@@ -61,7 +61,7 @@ class TempestNode(udi_interface.Node):
                 'yesterday': 0
                 }
         
-    def rain_update(self, current_rain):
+    def rain_update(self, current_rain, force=False):
         # Update the accumulators and drivers
         now = datetime.datetime.now()
         (y, w, d) = now.isocalendar()
@@ -86,24 +86,24 @@ class TempestNode(udi_interface.Node):
         # convert rain values if neccessary
         if self.units['rain'] == 'in':
             uom = 105  # inches
-            self.setDriver('PRECIP', round(self.rd['daily'] * 0.03937, 2), uom=uom)
-            self.setDriver('GV5', round(self.rd['hourly'] * 0.03937, 2), uom=uom)
-            self.setDriver('GV6', round(self.rd['weekly'] * 0.03937, 2), uom=uom)
-            self.setDriver('GV7', round(self.rd['monthly'] * 0.03937, 2), uom=uom)
-            self.setDriver('GV8', round(self.rd['yearly'] * 0.03937, 2), uom=uom)
-            self.setDriver('GV9', round(self.rd['yesterday'] * 0.03937, 2), uom=uom)
+            self.setDriver('PRECIP', round(self.rd['daily'] * 0.03937, 2), uom=uom, force=force)
+            self.setDriver('GV5', round(self.rd['hourly'] * 0.03937, 2), uom=uom, force=force)
+            self.setDriver('GV6', round(self.rd['weekly'] * 0.03937, 2), uom=uom, force=force)
+            self.setDriver('GV7', round(self.rd['monthly'] * 0.03937, 2), uom=uom, force=force)
+            self.setDriver('GV8', round(self.rd['yearly'] * 0.03937, 2), uom=uom, force=force)
+            self.setDriver('GV9', round(self.rd['yesterday'] * 0.03937, 2), uom=uom, force=force)
         else:
             uom = 82 # mm
-            self.setDriver('PRECIP', self.rd['daily'], uom=uom)
-            self.setDriver('GV5', self.rd['hourly'], uom=uom)
-            self.setDriver('GV6', self.rd['weekly'], uom=uom)
-            self.setDriver('GV7', self.rd['monthly'], uom=uom)
-            self.setDriver('GV8', self.rd['yearly'], uom=uom)
-            self.setDriver('GV9', self.rd['yesterday'], uom=uom)
+            self.setDriver('PRECIP', self.rd['daily'], uom=uom, force=force)
+            self.setDriver('GV5', self.rd['hourly'], uom=uom, force=force)
+            self.setDriver('GV6', self.rd['weekly'], uom=uom, force=force)
+            self.setDriver('GV7', self.rd['monthly'], uom=uom, force=force)
+            self.setDriver('GV8', self.rd['yearly'], uom=uom, force=force)
+            self.setDriver('GV9', self.rd['yesterday'], uom=uom, force=force)
 
         self.prev = now
 
-    def rapid_wind(self, obs):
+    def rapid_wind(self, obs, force=False):
         tm = obs[0]
         ws = obs[1] * (18 / 5)  # wind speed from m/s to kph
         wd = obs[2]
@@ -116,10 +116,10 @@ class TempestNode(udi_interface.Node):
         else:  # m/s
             ws = round(wg * 5 / 18, 2)
             uom = 40
-        self.setDriver('SPEED', ws, uom=uom)
-        self.setDriver('WINDDIR', wd)
+        self.setDriver('SPEED', ws, uom=uom, force=force)
+        self.setDriver('WINDDIR', wd, force=force)
 
-    def update(self, obs):
+    def update(self, obs, force=False):
         # process air data
         try:
             tm = obs[0][0] # ts
@@ -176,11 +176,11 @@ class TempestNode(udi_interface.Node):
             uom = 17
         else:
             uom = 4
-        self.setDriver('CLITEMP', t, uom=uom)
-        self.setDriver('GV0', fl, uom=uom)
-        self.setDriver('DEWPT', dp, uom=uom)
-        self.setDriver('HEATIX', hi, uom=uom)
-        self.setDriver('WINDCH', wc, uom=uom)
+        self.setDriver('CLITEMP', t, uom=uom, force=force)
+        self.setDriver('GV0', fl, uom=uom, force=force)
+        self.setDriver('DEWPT', dp, uom=uom, force=force)
+        self.setDriver('HEATIX', hi, uom=uom, force=force)
+        self.setDriver('WINDCH', wc, uom=uom, force=force)
 
         # pressures p, sl  (conversions)
         if self.units['pressure'] == 'inhg':
@@ -191,8 +191,8 @@ class TempestNode(udi_interface.Node):
             uom = 118
         else:
             uom = 117
-        self.setDriver('ATMPRES', sl, uom=uom)
-        self.setDriver('BARPRES', p, uom=uom)
+        self.setDriver('ATMPRES', sl, uom=uom, force=force)
+        self.setDriver('BARPRES', p, uom=uom, force=force)
 
         # distance ld  (conversions)
         if self.units['distance'] == 'mi':
@@ -200,13 +200,13 @@ class TempestNode(udi_interface.Node):
             uom = 116
         else:
             uom = 83
-        self.setDriver('DISTANC', ld, uom=uom)
+        self.setDriver('DISTANC', ld, uom=uom, force=force)
 
         # humidity h, strikes ls, battery bv, and trend (no conversions)
-        self.setDriver('CLIHUM', h)
-        self.setDriver('BATLVL', bv)
-        self.setDriver('GV1', trend)
-        self.setDriver('GV2', ls)
+        self.setDriver('CLIHUM', h, force=force)
+        self.setDriver('BATLVL', bv, force=force)
+        self.setDriver('GV1', trend, force=force)
+        self.setDriver('GV2', ls, force=force)
 
         # ra == mm/minute (or interval)  (conversion necessary)
         if self.units['rain'] == 'in':
@@ -215,8 +215,8 @@ class TempestNode(udi_interface.Node):
         else:
             uom = 46 # mm/hr
             ra = ra * 60
-        self.setDriver('RAINRT', ra)
-        self.rain_update(ra)
+        self.setDriver('RAINRT', ra, force=force)
+        self.rain_update(ra, force)
 
         # ws, wl, wg (conversion)
         if self.units['wind'] == 'mph':
@@ -231,15 +231,15 @@ class TempestNode(udi_interface.Node):
             wl = round(wg * 5 / 18, 2)
             wg = round(wg * 5 / 18, 2)
             uom = 40
-        self.setDriver('SPEED', ws, uom=uom)
-        self.setDriver('GV4', wl, uom=uom)
-        self.setDriver('GUST', wg, uom=uom)
+        self.setDriver('SPEED', ws, uom=uom, force=force)
+        self.setDriver('GV4', wl, uom=uom, force=force)
+        self.setDriver('GUST', wg, uom=uom, force=force)
 
         # il, uv, sr, wd (no conversion)
-        self.setDriver('LUMIN', il)
-        self.setDriver('UV', uv)
-        self.setDriver('SOLRAD', sr)
-        self.setDriver('WINDDIR', wd)
-        self.setDriver('GV3', wd)
-        self.setDriver('BATLVL', bv)
+        self.setDriver('LUMIN', il, force=force)
+        self.setDriver('UV', uv, force=force)
+        self.setDriver('SOLRAD', sr, force=force)
+        self.setDriver('WINDDIR', wd, force=force)
+        self.setDriver('GV3', wd, force=force)
+        self.setDriver('BATLVL', bv, force=force)
 
