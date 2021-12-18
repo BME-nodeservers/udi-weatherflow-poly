@@ -127,6 +127,9 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.4 12/17/2021
+  - Add SO_REUSEPORT to allow multiple copies to run
+  - Try forcing first update for Tempest
 - 3.0.3 11/02/2021
   - Conditionally create forecast nodes.
   - Only calculate ETo if we have data.
