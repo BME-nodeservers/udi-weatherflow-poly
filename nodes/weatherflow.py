@@ -294,10 +294,16 @@ class Controller(udi_interface.Node):
             try:
                 m_rain = 0
                 # get epoch time for start of month and end of month
-                datem = datetime.datetime(today.year, month, 1)
-                start_date = datem.replace(day=1)
-                #end_date = datem.replace(month=(month+1 % 12), day=1) - datetime.timedelta(days=1)
-                end_date = datem.replace(month=(month+1 % 12), day=1)
+                try:
+                    datem = datetime.datetime(today.year, month, 1)
+                    start_date = datem.replace(day=1)
+                    if month == 12:
+                        end_date = datem.replace(month=12, day=31)
+                    else:
+                        end_date = datem.replace(month=(month+1 % 12), day=1)
+                except Exception as e:
+                    LOGGER.error(f'Problem with dates: {e}')
+                    continue
 
                 # make request:
                 #  /swd/rest/observations/device/<id>?time_start=start&time_end=end&api_key=
@@ -592,8 +598,8 @@ class Controller(udi_interface.Node):
             if device['serial_number'] == data['serial_number']:
                 if not device['remote']:
                     node = self.poly.getNode(d)
-                    node.update(data['obs'], d['first'])
-                    d['first'] = False
+                    node.update(data['obs'], device['first'])
+                    device['first'] = False
                 else:
                     LOGGER.debug('device {} not local, ignore UDP data.'.format(d))
 
