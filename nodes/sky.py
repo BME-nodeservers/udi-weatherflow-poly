@@ -141,11 +141,11 @@ class SkyNode(udi_interface.Node):
 
             if self.units['rain'] == 'in':
                 uom = 24  # in/hr
-                ra = round(ra * 0.03937, 2) * 60
+                ra = round((ra * 0.03937 * 60), 3)
             else:
                 uom = 46 # mm/hr
                 ra = ra * 60
-            self.setDriver('RAINRT', ra)
+            self.setDriver('RAINRT', ra, uom=uom)
 
             # ws, wl, wg (conversion)
             if self.units['wind'] == 'mph':
