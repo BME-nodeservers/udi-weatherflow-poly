@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.7 12/27/2021
+  - Fix syntax error introduced in 3.0.6
 - 3.0.6 12/26/2021
   - Change rounding for Rain Rate. It was too agressive.
 - 3.0.5 12/19/2021

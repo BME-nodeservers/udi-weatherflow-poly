@@ -211,7 +211,7 @@ class TempestNode(udi_interface.Node):
         # ra == mm/minute (or interval)  (conversion necessary)
         if self.units['rain'] == 'in':
             uom = 24  # in/hr
-            ra = round((ra * 0.03937, * 60), 3)
+            ra = round((ra * 0.03937 * 60), 3)
         else:
             uom = 46 # mm/hr
             ra = ra * 60
