@@ -428,6 +428,8 @@ class Controller(udi_interface.Node):
                     uom = 106
                 self.setDriver('ETO', eto, uom=uom)
                 self.eto.reset(datetime.datetime.now().timetuple().tm_yday)
+
+            set_hub_timestamp()
         else:
             self.heartbeat()
             self.forecast_query(self.Parameters['Forecast'], False)
@@ -675,6 +677,7 @@ class Controller(udi_interface.Node):
                     #self.setDriver('GV2', data['rssi'], report=True, force=True)
                     self.nodes['hub'].update_rssi(data['rssi'])
                     self.nodes['hub'].update_sensors(data['sensor_status'])
+            """
 
             if (data["type"] == "hub_status"):
                 # This comes every 10 seconds, but we only update the driver
@@ -682,7 +685,6 @@ class Controller(udi_interface.Node):
                 #LOGGER.debug("hub_status: time={} {}".format(time.time(),data))
                 if "timestamp" in data:
                     self.hub_timestamp = data['timestamp']
-            """
 
         s.close()
         self.stopped = True
