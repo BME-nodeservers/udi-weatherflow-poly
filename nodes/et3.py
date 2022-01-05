@@ -329,7 +329,6 @@ class etO(object):
         self.ws_max = 0
         self.ws_min = 1000
         self.day = day
-        self.valid = False
         
     def addDevice(self, serial_num):
         self.devices.append(serial_num)
