@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.9 02/04/2022
+  - Add some error checking on ET0 calculation
 - 3.0.8 12/31/2021
   - Fix rain accumulation for tempest stations.
 - 3.0.7 12/27/2021

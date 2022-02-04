@@ -357,8 +357,14 @@ class etO(object):
     def doETo(self):
         if not self.valid:
             return 0
-        return evapotranspriation(self.temp_max, self.temp_min, None, self.WindSpeed(), self.elevation, self.rh_max, self.rh_min, self.latitude, self.canopy, self.day)
+        try:
+            eto = evapotranspriation(self.temp_max, self.temp_min, None, self.WindSpeed(), self.elevation, self.rh_max, self.rh_min, self.latitude, self.canopy, self.day)
+        except Exception as e:
+            eto = 0
+            LOGGER.error('ET0 caclulation failed: {}'.format(e))
 
+        return eto
+            
 
     def addData(self, data):
         if data['type'] == 'obs_air':
