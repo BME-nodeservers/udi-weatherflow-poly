@@ -109,7 +109,7 @@ class SkyNode(udi_interface.Node):
         self.setDriver('SPEED', ws, uom=uom)
         self.setDriver('WINDDIR', wd)
 
-    def update(self, obs):
+    def update(self, obs, force):
         # process sky data
         try:
             tm = obs[0][0]  # epoch

@@ -37,7 +37,7 @@ class AirNode(udi_interface.Node):
         self.trend = []
         self.windspeed = 0  
 
-    def update(self, obs):
+    def update(self, obs, force):
         # process air data
         try:
             tm = obs[0][0] # ts
