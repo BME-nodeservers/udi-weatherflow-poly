@@ -429,7 +429,7 @@ class Controller(udi_interface.Node):
                 self.setDriver('ETO', eto, uom=uom)
                 self.eto.reset(datetime.datetime.now().timetuple().tm_yday)
 
-            set_hub_timestamp()
+            self.set_hub_timestamp()
         else:
             self.heartbeat()
             self.forecast_query(self.Parameters['Forecast'], False)
