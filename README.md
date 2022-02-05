@@ -127,6 +127,9 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.10 02/04/2022
+  - Fix sky and air node update() methods
+  - Fix call to set_hub_timestamp
 - 3.0.9 02/04/2022
   - Add some error checking on ET0 calculation
 - 3.0.8 12/31/2021
