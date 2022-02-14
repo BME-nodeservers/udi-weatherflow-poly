@@ -86,6 +86,7 @@
             <st id="UV" editor="I_UV" />
             <st id="SOLRAD" editor="I_RADIATION" />
             <st id="LUMIN" editor="I_LUX" />
+            <st id="BATLVL" editor="I_VOLTS" />
         </sts>
     </nodeDef>
 

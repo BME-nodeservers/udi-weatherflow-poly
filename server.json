@@ -8,7 +8,7 @@
     "notice": "see http://www.weatherflow.com for more information",
     "shortPoll": "60",
     "longPoll": "600",
-    "profile_version": "2.0.0",
+    "profile_version": "2.0.1",
 	"customParams": {
 		"Token": "",
 		"ListenPort": 50222,
@@ -19,8 +19,8 @@
     	{
     		"title": "WeatherFlow: A node server for WeatherFlow",
     		"author": "Bob Paauwe",
-    		"version": "3.0.10",
-    		"date": "Febuary 4, 2022",
+    		"version": "3.0.11",
+    		"date": "Febuary 13, 2022",
     		"source": "https://github.com/BME-nodeservers/udi-weatherflow-poly",
             "license": "https://github.com/BME-nodeservers/udi-weatherflow-poly/LICENSE"
 		}
