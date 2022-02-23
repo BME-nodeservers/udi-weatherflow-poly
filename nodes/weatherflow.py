@@ -255,7 +255,7 @@ class Controller(udi_interface.Node):
                     return None
 
         node = self.poly.getNode(device_id)
-        node.update(jdata['obs'])
+        node.update(jdata['obs'], False)
 
     def create_device_node(self, station, device, units, elevation):
         """
