@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.12 02/22/2022
+  - Add some error checking around station units.
 - 3.0.11 02/13/2022
   - Added battery level to Tempest node
 - 3.0.10 02/04/2022

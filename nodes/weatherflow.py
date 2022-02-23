@@ -180,6 +180,10 @@ class Controller(udi_interface.Node):
                     self.eto.day = datetime.datetime.now().timetuple().tm_yday
 
         info['units'] = self.query_station_uom(station, rain_id, rain_type)
+        if info['units'] == None:
+            LOGGER.error('Failed to get station units, unable to continue')
+            self.poly.Notices['units'] = 'Failed to get station units, unable to continue.'
+            self.isConfigured = False
 
         #LOGGER.error('{}'.format(jdata))
         return info
@@ -212,15 +216,16 @@ class Controller(udi_interface.Node):
         units['distance'] = jdata['station_units']['units_distance']
         units['other'] = jdata['station_units']['units_other']
 
-        # TODO: Should we pull other data from here also, like precipitation
-        #       accumulations?
-        d_rain = jdata['obs'][0]['precip_accum_local_day']
-        LOGGER.info('daily rainfall = %f' % d_rain)
-        p_rain = jdata['obs'][0]['precip_accum_local_yesterday']
-        LOGGER.info('yesterday rainfall = %f' % p_rain)
-
         # Do we have the device array in jdata?
         if rain_type == 'SK' or rain_type == 'ST':
+
+            # TODO: Should we pull other data from here also, like precipitation
+            #       accumulations?
+            d_rain = jdata['obs'][0]['precip_accum_local_day']
+            LOGGER.info('daily rainfall = %f' % d_rain)
+            p_rain = jdata['obs'][0]['precip_accum_local_yesterday']
+            LOGGER.info('yesterday rainfall = %f' % p_rain)
+
             w_rain = self.get_weekly_rain(rain_id, rain_type)
             m_rain, y_rain = self.get_monthly_rain(rain_id, rain_type)
 
