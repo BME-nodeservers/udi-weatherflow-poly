@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.14 03/15/2022
+  - Add error checking around station id.
 - 3.0.13 02/22/2022
   - fix update when using REST API to get data.
 - 3.0.12 02/22/2022
