@@ -104,7 +104,10 @@ class Controller(udi_interface.Node):
             if st == 'Rapid Wind':
                 continue
 
-            stationList.append({'id': st, 'remote': self.Parameters[st]})
+            if st.isdigit():
+                stationList.append({'id': st, 'remote': self.Parameters[st]})
+            else:
+                logger.debug(f'skipping {st} not a valid station id')
 
         if validToken and len(stationList) > 0 and validWind:
             self.Notices.clear()
@@ -138,6 +141,11 @@ class Controller(udi_interface.Node):
 
         if not 'stations' in jdata:
             LOGGER.error('Invalid station ID: {}'.format(station))
+            self.Notices['invalid'] = 'Station ID {} is invalid.'.format(station)
+            return None
+
+        if len(jdata['stations']) < 1:
+            LOGGER.error('No matching station ID: {}'.format(station))
             self.Notices['invalid'] = 'Station ID {} is invalid.'.format(station)
             return None
 
@@ -628,7 +636,14 @@ class Controller(udi_interface.Node):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        s.bind(('0.0.0.0', self.Parameters['ListenPort']))
+        try:
+            s.bind(('0.0.0.0', self.Parameters['ListenPort']))
+        except Exception as e:
+            LOGGER.error('Failed to bind to port {}: {}'.format(self.Parameters['ListenPort'], e))
+            s.close()
+            self.stopped = True
+            return
+
         self.windspeed = 0
         sky_tm = 0
         air_tm = 0
