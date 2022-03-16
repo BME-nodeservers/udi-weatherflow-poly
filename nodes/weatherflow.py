@@ -107,7 +107,7 @@ class Controller(udi_interface.Node):
             if st.isdigit():
                 stationList.append({'id': st, 'remote': self.Parameters[st]})
             else:
-                logger.debug(f'skipping {st} not a valid station id')
+                LOGGER.debug(f'skipping {st} not a valid station id')
 
         if validToken and len(stationList) > 0 and validWind:
             self.Notices.clear()
