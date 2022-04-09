@@ -231,8 +231,13 @@ class Controller(udi_interface.Node):
             #       accumulations?
             d_rain = jdata['obs'][0]['precip_accum_local_day']
             LOGGER.info('daily rainfall = %f' % d_rain)
-            p_rain = jdata['obs'][0]['precip_accum_local_yesterday']
-            LOGGER.info('yesterday rainfall = %f' % p_rain)
+
+            # handle case where this is a brand new device with no history
+            if 'precip_accum_local_yesterday' in jdata['obs'][0]:
+                p_rain = jdata['obs'][0]['precip_accum_local_yesterday']
+                LOGGER.info('yesterday rainfall = %f' % p_rain)
+            else:
+                p_rain = 0
 
             w_rain = self.get_weekly_rain(rain_id, rain_type)
             m_rain, y_rain = self.get_monthly_rain(rain_id, rain_type)
