@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.15 04/09/2022
+  - check for yesterday's rain before using it.
 - 3.0.14 03/15/2022
   - Add error checking around station id.
 - 3.0.13 02/22/2022

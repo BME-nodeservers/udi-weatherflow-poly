@@ -19,8 +19,8 @@
     	{
     		"title": "WeatherFlow: A node server for WeatherFlow",
     		"author": "Bob Paauwe",
-    		"version": "3.0.14",
-    		"date": "March 15, 2022",
+    		"version": "3.0.15",
+    		"date": "April 9, 2022",
     		"source": "https://github.com/BME-nodeservers/udi-weatherflow-poly",
             "license": "https://github.com/BME-nodeservers/udi-weatherflow-poly/LICENSE"
 		}
