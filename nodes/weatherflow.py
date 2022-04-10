@@ -374,8 +374,8 @@ class Controller(udi_interface.Node):
     def get_yesterday_rain(self, device_id, device_type):
         today = datetime.datetime.today()
         start_date = today - datetime.timedelta(days=1)
-        start_date = datetime.datetime.combine(start_date, datetime.min.time())
-        end_date = datetime.datetime.combine(today, datetime.min.time())
+        start_date = datetime.datetime.combine(start_date, datetime.datetime.min.time())
+        end_date = datetime.datetime.combine(today, datetime.datetime.min.time())
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/device/'
         path_str += str(device_id) + '?'
@@ -403,7 +403,7 @@ class Controller(udi_interface.Node):
 
     def get_today_rain(self, device_id, device_type):
         today = datetime.datetime.today()
-        start_date = datetime.datetime.combine(today, datetime.min.time())
+        start_date = datetime.datetime.combine(today, datetime.datetime.min.time())
         end_date = today
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/device/'
