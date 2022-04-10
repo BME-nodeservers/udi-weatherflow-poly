@@ -187,7 +187,8 @@ class Controller(udi_interface.Node):
                     self.eto.latitude = jdata['stations'][0]['latitude']
                     self.eto.day = datetime.datetime.now().timetuple().tm_yday
 
-        info['units'] = self.query_station_uom(station, rain_id, rain_type)
+                info['units'] = self.query_station_uom(station, rain_id, rain_type)
+
         if info['units'] == None:
             LOGGER.error('Failed to get station units, unable to continue')
             self.poly.Notices['units'] = 'Failed to get station units, unable to continue.'
