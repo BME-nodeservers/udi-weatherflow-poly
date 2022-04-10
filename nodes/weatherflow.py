@@ -231,7 +231,7 @@ class Controller(udi_interface.Node):
             w_rain = self.get_weekly_rain(rain_id, rain_type)
             m_rain, y_rain = self.get_monthly_rain(rain_id, rain_type)
 
-            self.rain_accumulation(rain_id, p_rain, d_rain, w_rain, m_rain, y_rain)
+            self.rain_accumulation(rain_id, p_rain, t_rain, w_rain, m_rain, y_rain)
     def query_device(self, device_id):
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/device/' + str(device_id) 
