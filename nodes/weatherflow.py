@@ -163,12 +163,6 @@ class Controller(udi_interface.Node):
         info['elevation'] = jdata['stations'][0]['station_meta']['elevation']
         info['devices'] = []
         for d in jdata['stations'][0]['devices']:
-            """
-              TODO:
-              station UOM's come from station observation data so should
-              we query that here?
-            """
-
             if d['device_type'] != 'HB':
                 LOGGER.debug('Adding device {} {}'.format(d['device_id'], d['serial_number']))
                 info['devices'].append(
@@ -177,9 +171,11 @@ class Controller(udi_interface.Node):
                             'device_type': d['device_type'],
                             'serial_number': d['serial_number']
                          })
+
+                rain_type = d['device_type']
                 if d['device_type'] == 'SK' or d['device_type'] == 'ST':
                     rain_id = d['device_id']
-                    rain_type = d['device_type']
+                    self.query_station_rain(station, rain_id, rain_type)
 
                 if station == self.Parameters['Forecast']:
                     self.eto.addDevice(d['serial_number'])
@@ -187,8 +183,8 @@ class Controller(udi_interface.Node):
                     self.eto.latitude = jdata['stations'][0]['latitude']
                     self.eto.day = datetime.datetime.now().timetuple().tm_yday
 
-                info['units'] = self.query_station_uom(station, rain_id, rain_type)
 
+        info['units'] = self.query_station_uom(station)
         if info['units'] == None:
             LOGGER.error('Failed to get station units, unable to continue')
             self.poly.Notices['units'] = 'Failed to get station units, unable to continue.'
@@ -197,7 +193,7 @@ class Controller(udi_interface.Node):
         #LOGGER.error('{}'.format(jdata))
         return info
 
-    def query_station_uom(self, station, rain_id, rain_type):
+    def query_station_uom(self, station):
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/station/' + station 
         path_str += '?api_key=' + self.Parameters.Token
@@ -225,29 +221,17 @@ class Controller(udi_interface.Node):
         units['distance'] = jdata['station_units']['units_distance']
         units['other'] = jdata['station_units']['units_other']
 
+        return units
+
+    def query_station_rain(self, station, rain_id, rain_type):
         # Do we have the device array in jdata?
         if rain_type == 'SK' or rain_type == 'ST':
-
-            # TODO: Should we pull other data from here also, like precipitation
-            #       accumulations?
-            d_rain = jdata['obs'][0]['precip_accum_local_day']
-            LOGGER.info('daily rainfall = %f' % d_rain)
-
-            # handle case where this is a brand new device with no history
-            if 'precip_accum_local_yesterday' in jdata['obs'][0]:
-                p_rain = jdata['obs'][0]['precip_accum_local_yesterday']
-                LOGGER.info('yesterday rainfall = %f' % p_rain)
-            else:
-                p_rain = 0
-
+            t_rain = self.get_today_rain(rain_id, rain_type)
+            p_rain = self.get_yesterday_rain(rain_id, rain_type)
             w_rain = self.get_weekly_rain(rain_id, rain_type)
             m_rain, y_rain = self.get_monthly_rain(rain_id, rain_type)
 
             self.rain_accumulation(rain_id, p_rain, d_rain, w_rain, m_rain, y_rain)
-
-        return units
-
-
     def query_device(self, device_id):
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/device/' + str(device_id) 
@@ -305,6 +289,7 @@ class Controller(udi_interface.Node):
         self.poly.addNode(node)
         self.nodesCreated += 1
 
+    # Get observations data for each month of the year, so far
     def get_monthly_rain(self, device_id, device_type):
         # Do month by month query of rain info.
         today = datetime.datetime.today()
@@ -355,6 +340,7 @@ class Controller(udi_interface.Node):
 
         return m_rain, y_rain
 
+    # Get observations data for past week
     def get_weekly_rain(self, device_id, device_type):
         # Need to do a separate query for weekly rain
         today = datetime.datetime.today()
@@ -384,6 +370,65 @@ class Controller(udi_interface.Node):
         LOGGER.info('weekly rain total = ' + str(w_rain))
 
         return w_rain
+
+    def get_yesterday_rain(self, device_id, device_type):
+        today = datetime.datetime.today()
+        start_date = today - datetime.timedelta(days=1)
+        start_date = datetime.combine(start_date, datetime.min.time())
+        end_date = datetime.combine(today, datetime.min.time())
+        path_str = 'https://swd.weatherflow.com'
+        path_str += '/swd/rest/observations/device/'
+        path_str += str(device_id) + '?'
+        path_str += 'time_start=' + str(int(start_date.timestamp()))
+        path_str += '&time_end=' + str(int(end_date.timestamp()))
+        path_str += '&api_key=' + self.Parameters.Token
+
+        LOGGER.info('path = ' + path_str)
+
+        try:
+            c = requests.get(path_str)
+            awdata = c.json()
+            y_rain = 0
+            for obs in awdata['obs']:
+                y_rain += obs[3] if device_type == 'SK' else obs[12]
+
+            c.close()
+        except:
+            LOGGER.error('Failed to get yesterday rain')
+            c.close()
+
+        LOGGER.info('yesterday rain total = ' + str(y_rain))
+
+        return y_rain
+
+    def get_today_rain(self, device_id, device_type):
+        today = datetime.datetime.today()
+        start_date = datetime.combine(today, datetime.min.time())
+        end_date = today
+        path_str = 'https://swd.weatherflow.com'
+        path_str += '/swd/rest/observations/device/'
+        path_str += str(device_id) + '?'
+        path_str += 'time_start=' + str(int(start_date.timestamp()))
+        path_str += '&time_end=' + str(int(end_date.timestamp()))
+        path_str += '&api_key=' + self.Parameters.Token
+
+        LOGGER.info('path = ' + path_str)
+
+        try:
+            c = requests.get(path_str)
+            awdata = c.json()
+            t_rain = 0
+            for obs in awdata['obs']:
+                t_rain += obs[3] if device_type == 'SK' else obs[12]
+
+            c.close()
+        except:
+            LOGGER.error('Failed to get today rain')
+            c.close()
+
+        LOGGER.info('today rain total = ' + str(t_rain))
+        return t_rain
+
 
     def rain_accumulation(self, device, p_rain, d_rain, w_rain, m_rain, y_rain):
         rd = {
