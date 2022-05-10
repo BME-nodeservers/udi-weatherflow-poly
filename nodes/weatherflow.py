@@ -163,6 +163,9 @@ class Controller(udi_interface.Node):
         info['elevation'] = jdata['stations'][0]['station_meta']['elevation']
         info['devices'] = []
         for d in jdata['stations'][0]['devices']:
+            if 'device_type' not in d:
+                continue
+
             if d['device_type'] != 'HB':
                 LOGGER.debug('Adding device {} {}'.format(d['device_id'], d['serial_number']))
                 info['devices'].append(

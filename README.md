@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.20 05/10/2022
+  - skip bad device records when querying station info
 - 3.0.16 04/10/2022
   - separate out rain queries from uom query. station may have more than
     one device that can collect rain data.
