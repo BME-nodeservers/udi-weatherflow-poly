@@ -52,6 +52,7 @@ class ForecastNode(udi_interface.Node):
                 value = round((forecast['air_temp_high'] * 1.8) + 32, 1)  # convert to F
                 uom = 17
             else:
+                value = forecast['air_temp_high']
                 uom = 4
             self.setDriver('GV0', value, True, force, uom)
         if 'air_temp_low' in forecast:
@@ -59,6 +60,7 @@ class ForecastNode(udi_interface.Node):
                 value = round((forecast['air_temp_low'] * 1.8) + 32, 1)  # convert to F
                 uom = 17
             else:
+                value = forecast['air_temp_low']
                 uom = 4
             self.setDriver('GV1', value, True, force, uom)
         if 'precip_probability' in forecast:
