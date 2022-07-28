@@ -127,6 +127,8 @@ The settings for this node are:
 3. A WeatherFlow weather station and assocated account
 
 # Release Notes
+- 3.0.22 07/28/2022
+  - Restrict ETO precision to 3 decimal places.
 - 3.0.20 05/10/2022
   - skip bad device records when querying station info
 - 3.0.16 04/10/2022

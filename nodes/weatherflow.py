@@ -493,7 +493,7 @@ class Controller(udi_interface.Node):
                     eto = round(eto * 0.03937, 3)
                 else:
                     uom = 106
-                self.setDriver('ETO', eto, uom=uom)
+                self.setDriver('ETO', round(eto, 3), uom=uom)
                 self.eto.reset(datetime.datetime.now().timetuple().tm_yday)
 
             self.set_hub_timestamp()

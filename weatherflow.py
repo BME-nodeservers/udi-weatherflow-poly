@@ -15,7 +15,7 @@ LOGGER = udi_interface.LOGGER
 if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([weatherflow.Controller])
-        polyglot.start('3.0.21')
+        polyglot.start('3.0.22')
         control = weatherflow.Controller(polyglot, 'controller', 'controller', 'WeatherFlow')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
