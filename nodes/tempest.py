@@ -94,12 +94,12 @@ class TempestNode(udi_interface.Node):
             self.setDriver('GV9', round(self.rd['yesterday'] * 0.03937, 2), uom=uom, force=force)
         else:
             uom = 82 # mm
-            self.setDriver('PRECIP', self.rd['daily'], uom=uom, force=force)
-            self.setDriver('GV5', self.rd['hourly'], uom=uom, force=force)
-            self.setDriver('GV6', self.rd['weekly'], uom=uom, force=force)
-            self.setDriver('GV7', self.rd['monthly'], uom=uom, force=force)
-            self.setDriver('GV8', self.rd['yearly'], uom=uom, force=force)
-            self.setDriver('GV9', self.rd['yesterday'], uom=uom, force=force)
+            self.setDriver('PRECIP', round(self.rd['daily'], 3), uom=uom, force=force)
+            self.setDriver('GV5', round(self.rd['hourly'], 3), uom=uom, force=force)
+            self.setDriver('GV6', round(self.rd['weekly'], 3), uom=uom, force=force)
+            self.setDriver('GV7', round(self.rd['monthly'], 3), uom=uom, force=force)
+            self.setDriver('GV8', round(self.rd['yearly'], 3), uom=uom, force=force)
+            self.setDriver('GV9', round(self.rd['yesterday'], 3), uom=uom, force=force)
 
         self.prev = now
 

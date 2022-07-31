@@ -84,12 +84,12 @@ class SkyNode(udi_interface.Node):
             self.setDriver('GV6', round(self.rd['yesterday'] * 0.03937, 2), uom=uom)
         else:
             uom = 82 # mm
-            self.setDriver('PRECIP', self.rd['daily'], uom=uom)
-            self.setDriver('GV2', self.rd['hourly'], uom=uom)
-            self.setDriver('GV3', self.rd['weekly'], uom=uom)
-            self.setDriver('GV4', self.rd['monthly'], uom=uom)
-            self.setDriver('GV5', self.rd['yearly'], uom=uom)
-            self.setDriver('GV6', self.rd['yesterday'], uom=uom)
+            self.setDriver('PRECIP', round(self.rd['daily'], 3), uom=uom)
+            self.setDriver('GV2', round(self.rd['hourly'], 3), uom=uom)
+            self.setDriver('GV3', round(self.rd['weekly'], 3), uom=uom)
+            self.setDriver('GV4', round(self.rd['monthly'], 3), uom=uom)
+            self.setDriver('GV5', round(self.rd['yearly'], 3), uom=uom)
+            self.setDriver('GV6', round(self.rd['yesterday'], 3), uom=uom)
 
         self.prev = now
 
