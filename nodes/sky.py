@@ -154,8 +154,14 @@ class SkyNode(udi_interface.Node):
                 wg = round(wg / 1.609344, 2)
                 uom = 48
             elif self.units['wind'] == 'kph':
+                ws = round(ws, 2)
+                wl = round(wl, 2)
+                wg = round(wg, 2)
                 uom = 32
             else:
+                ws = round(ws * 5 / 18, 2)
+                wl = round(wl * 5 / 18, 2)
+                wg = round(wg * 5 / 18, 2)
                 uom = 40
             self.setDriver('SPEED', ws, uom=uom)
             self.setDriver('GV1', wl, uom=uom)
