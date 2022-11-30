@@ -215,7 +215,7 @@ class TempestNode(udi_interface.Node):
             ra = round((ra * 0.03937 * 60), 3)
         else:
             uom = 46 # mm/hr
-            ra = ra * 60
+            ra = round((ra * 60), 3)
         self.setDriver('RAINRT', ra, uom=uom, force=force)
 
         # ws, wl, wg (conversion)
