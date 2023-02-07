@@ -213,7 +213,7 @@ class Controller(udi_interface.Node):
         if 'status' in jdata:
             if 'status_code' in jdata['status']:
                 if jdata['status']['status_code'] != 0:
-                    LOGGER.error('Error querying station {} information:'.format(station, jdata['status']['status_message']))
+                    LOGGER.error('Error querying station {} information: {}'.format(station, jdata['status']['status_message']))
                     return None
 
         units = {}
