@@ -691,7 +691,7 @@ class Controller(udi_interface.Node):
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         try:
-            s.bind(('0.0.0.0', self.Parameters['ListenPort']))
+            s.bind(('0.0.0.0', int(self.Parameters['ListenPort'])))
         except Exception as e:
             LOGGER.error('Failed to bind to port {}: {}'.format(self.Parameters['ListenPort'], e))
             s.close()
