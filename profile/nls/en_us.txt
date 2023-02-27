@@ -100,4 +100,5 @@ WEATHER-10 = Foggy
 WEATHER-11 = Cloudy
 WEATHER-12 = Partly Cloudy
 WEATHER-13 = Very Light Rain
-WEATHER-14 = Unknown
+WEATHER-14 = Snow Likely
+WEATHER-15 = Unknown
