@@ -772,9 +772,9 @@ class Controller(udi_interface.Node):
 
     # Hub status information here: battery and rssi values.
     drivers = [
-            {'driver': 'ST', 'value': 1, 'uom': 2},
-            {'driver': 'GV4', 'value': 0, 'uom': 57},   # Hub seconds since seen
-            {'driver': 'ETO', 'value': 0, 'uom': 106}   # Yesterday's etO
+            {'driver': 'ST',  'value': 1, 'uom': 2,   'name': 'Connection Status'},
+            {'driver': 'GV4', 'value': 0, 'uom': 57,  'name': 'Last hub data timestamp'},   # Hub seconds since seen
+            {'driver': 'ETO', 'value': 0, 'uom': 106, 'name': 'Yesterday\'s ETo'}   # Yesterday's etO
             ]
 
 

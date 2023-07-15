@@ -14,21 +14,21 @@ LOGGER = udi_interface.LOGGER
 class SkyNode(udi_interface.Node):
     id = 'sky'
     drivers = [
-            {'driver': 'SPEED', 'value': 0, 'uom': 32},  # speed
-            {'driver': 'WINDDIR', 'value': 0, 'uom': 76}, # direction
-            {'driver': 'GUST', 'value': 0, 'uom': 32}, # gust
-            {'driver': 'GV1', 'value': 0, 'uom': 32}, # lull
-            {'driver': 'RAINRT', 'value': 0, 'uom': 46},  # rate
-            {'driver': 'GV2', 'value': 0, 'uom': 82}, # hourly
-            {'driver': 'PRECIP', 'value': 0, 'uom': 82}, # daily
-            {'driver': 'GV3', 'value': 0, 'uom': 82}, # weekly
-            {'driver': 'GV4', 'value': 0, 'uom': 82}, # monthly
-            {'driver': 'GV5', 'value': 0, 'uom': 82}, # yearly
-            {'driver': 'GV6', 'value': 0, 'uom': 82},  # yesterday
-            {'driver': 'UV', 'value': 0, 'uom': 71},  # UV
-            {'driver': 'SOLRAD', 'value': 0, 'uom': 74},  # solar radiation
-            {'driver': 'LUMIN', 'value': 0, 'uom': 36},  # Lux
-            {'driver': 'BATLVL', 'value': 0, 'uom': 72},  # battery
+            {'driver': 'SPEED',   'value': 0, 'uom': 32, 'name': 'Wind Speed'}, # speed
+            {'driver': 'WINDDIR', 'value': 0, 'uom': 76, 'name': 'Wind Direction'}, # direction
+            {'driver': 'GUST',    'value': 0, 'uom': 32, 'name': 'Gust Speed'}, # gust
+            {'driver': 'GV1',     'value': 0, 'uom': 32, 'name': 'Lull Speed'}, # lull
+            {'driver': 'RAINRT',  'value': 0, 'uom': 46, 'name': 'Rain Rate'}, # rate
+            {'driver': 'GV2',     'value': 0, 'uom': 82, 'name': 'Hourly Rain'}, # hourly
+            {'driver': 'PRECIP',  'value': 0, 'uom': 82, 'name': 'Daily Rain'}, # daily
+            {'driver': 'GV3',     'value': 0, 'uom': 82, 'name': 'Weekly Rain'}, # weekly
+            {'driver': 'GV4',     'value': 0, 'uom': 82, 'name': 'Monthly Rain'}, # monthly
+            {'driver': 'GV5',     'value': 0, 'uom': 82, 'name': 'Yearly Rain'}, # yearly
+            {'driver': 'GV6',     'value': 0, 'uom': 82, 'name': 'Rain Yesterday'}, # yesterday
+            {'driver': 'UV',      'value': 0, 'uom': 71, 'name': 'UV Index'}, # UV
+            {'driver': 'SOLRAD',  'value': 0, 'uom': 74, 'name': 'Solar Radiation'}, # solar radiation
+            {'driver': 'LUMIN',   'value': 0, 'uom': 36, 'name': 'Light Level'}, # Lux
+            {'driver': 'BATLVL',  'value': 0, 'uom': 72, 'name': 'Battery'}, # battery
             ]
 
     units = {}

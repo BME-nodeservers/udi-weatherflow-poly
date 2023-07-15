@@ -15,33 +15,33 @@ LOGGER = udi_interface.LOGGER
 class TempestNode(udi_interface.Node):
     id = 'tempest'
     drivers = [
-            {'driver': 'CLITEMP', 'value': 0, 'uom': 17},  # temperature
-            {'driver': 'CLIHUM', 'value': 0, 'uom': 22},   # humidity
-            {'driver': 'ATMPRES', 'value': 0, 'uom': 117}, # abs (station) press
-            {'driver': 'BARPRES', 'value': 0, 'uom': 117}, # rel (sealevel) press
-            {'driver': 'GV0', 'value': 0, 'uom': 17},      # feels like
-            {'driver': 'DEWPT', 'value': 0, 'uom': 17},    # dewpoint
-            {'driver': 'HEATIX', 'value': 0, 'uom': 17},   # heat index
-            {'driver': 'WINDCH', 'value': 0, 'uom': 17},   # windchill
-            {'driver': 'GV1', 'value': 0, 'uom': 25},      # pressure trend
-            {'driver': 'GV2', 'value': 0, 'uom': 25},      # lightning Strikes
-            {'driver': 'DISTANC', 'value': 0, 'uom': 83},  # lightning Distance
-            {'driver': 'SPEED', 'value': 0, 'uom': 32},  # speed
-            {'driver': 'WINDDIR', 'value': 0, 'uom': 76}, # direction
-            {'driver': 'GUST', 'value': 0, 'uom': 32}, # gust
-            {'driver': 'GV3', 'value': 0, 'uom': 76}, # gust direction
-            {'driver': 'GV4', 'value': 0, 'uom': 32}, # lull
-            {'driver': 'RAINRT', 'value': 0, 'uom': 46},  # rate
-            {'driver': 'GV5', 'value': 0, 'uom': 82}, # hourly
-            {'driver': 'PRECIP', 'value': 0, 'uom': 82}, # daily
-            {'driver': 'GV6', 'value': 0, 'uom': 82}, # weekly
-            {'driver': 'GV7', 'value': 0, 'uom': 82}, # monthly
-            {'driver': 'GV8', 'value': 0, 'uom': 82}, # yearly
-            {'driver': 'GV9', 'value': 0, 'uom': 82},  # yesterday
-            {'driver': 'UV', 'value': 0, 'uom': 71},  # UV
-            {'driver': 'SOLRAD', 'value': 0, 'uom': 74},  # solar radiation
-            {'driver': 'LUMIN', 'value': 0, 'uom': 36},  # Lux
-            {'driver': 'BATLVL', 'value': 0, 'uom': 72},  # battery
+            {'driver': 'CLITEMP', 'value': 0, 'uom': 17, 'name': 'Temperature'},  # temperature
+            {'driver': 'CLIHUM',  'value': 0, 'uom': 22, 'name': 'Humidity'},  # humidity
+            {'driver': 'ATMPRES', 'value': 0, 'uom': 117, 'name': 'Station Pressure'}, # abs (station) press
+            {'driver': 'BARPRES', 'value': 0, 'uom': 117, 'name': 'Sealevel Pressure'}, # rel (sealevel) press
+            {'driver': 'GV0',     'value': 0, 'uom': 17, 'name': 'Feels Like'},  # feels like
+            {'driver': 'DEWPT',   'value': 0, 'uom': 17, 'name': 'Dewpoint'},  # dewpoint
+            {'driver': 'HEATIX',  'value': 0, 'uom': 17, 'name': 'Heat Index'},  # heat index
+            {'driver': 'WINDCH',  'value': 0, 'uom': 17, 'name': 'Windchill'},  # windchill
+            {'driver': 'GV1',     'value': 0, 'uom': 25, 'name': 'Pressure Trend'},  # pressure trend
+            {'driver': 'GV2',     'value': 0, 'uom': 25, 'name': 'Lightning Strikes'},  # lightning Strikes
+            {'driver': 'DISTANC', 'value': 0, 'uom': 83, 'name': 'Lightning Distance'},  # lightning Distance
+            {'driver': 'SPEED',   'value': 0, 'uom': 32, 'name': 'Wind Speed'},  # speed
+            {'driver': 'WINDDIR', 'value': 0, 'uom': 76, 'name': 'Wind Direction'},  # direction
+            {'driver': 'GUST',    'value': 0, 'uom': 32, 'name': 'Gust Speed'},  # gust
+            {'driver': 'GV3',     'value': 0, 'uom': 76, 'name': 'Gust Direction'},  # gust direction
+            {'driver': 'GV4',     'value': 0, 'uom': 32, 'name': 'Lull Speed'},  # lull
+            {'driver': 'RAINRT',  'value': 0, 'uom': 46, 'name': 'Rain Rate'},  # rate
+            {'driver': 'GV5',     'value': 0, 'uom': 82, 'name': 'Hourly Rain'},  # hourly
+            {'driver': 'PRECIP',  'value': 0, 'uom': 82, 'name': 'Daily Rain'},  # daily
+            {'driver': 'GV6',     'value': 0, 'uom': 82, 'name': 'Weekly Rain'},  # weekly
+            {'driver': 'GV7',     'value': 0, 'uom': 82, 'name': 'Monthly Rain'},  # monthly
+            {'driver': 'GV8',     'value': 0, 'uom': 82, 'name': 'Yearly Rain'},  # yearly
+            {'driver': 'GV9',     'value': 0, 'uom': 82, 'name': 'Rain Yesterday'},  # yesterday
+            {'driver': 'UV',      'value': 0, 'uom': 71, 'name': 'UV Index'},  # UV
+            {'driver': 'SOLRAD',  'value': 0, 'uom': 74, 'name': 'Solar Radiation'},  # solar radiation
+            {'driver': 'LUMIN',   'value': 0, 'uom': 36, 'name': 'Light Level'},  # Lux
+            {'driver': 'BATLVL',  'value': 0, 'uom': 72, 'name': 'Battery'},  # battery
 
             ]
     units = {}

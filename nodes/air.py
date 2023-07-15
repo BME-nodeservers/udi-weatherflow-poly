@@ -14,18 +14,18 @@ LOGGER = udi_interface.LOGGER
 class AirNode(udi_interface.Node):
     id = 'air'
     drivers = [
-            {'driver': 'CLITEMP', 'value': 0, 'uom': 17},  # temperature
-            {'driver': 'CLIHUM', 'value': 0, 'uom': 22},   # humidity
-            {'driver': 'ATMPRES', 'value': 0, 'uom': 117}, # abs (station) press
-            {'driver': 'BARPRES', 'value': 0, 'uom': 117}, # rel (sealevel) press
-            {'driver': 'GV0', 'value': 0, 'uom': 17},      # feels like
-            {'driver': 'DEWPT', 'value': 0, 'uom': 17},    # dewpoint
-            {'driver': 'HEATIX', 'value': 0, 'uom': 17},   # heat index
-            {'driver': 'WINDCH', 'value': 0, 'uom': 17},   # windchill
-            {'driver': 'GV1', 'value': 0, 'uom': 25},      # pressure trend
-            {'driver': 'GV2', 'value': 0, 'uom': 56},      # lightning Strikes
-            {'driver': 'DISTANC', 'value': 0, 'uom': 83},  # lightning Distance
-            {'driver': 'BATLVL', 'value': 0, 'uom': 72},   # battery
+            {'driver': 'CLITEMP', 'value': 0, 'uom': 17,  'name': 'Temperature'},  # temperature
+            {'driver': 'CLIHUM',  'value': 0, 'uom': 22,  'name': 'Humidity'},   # humidity
+            {'driver': 'ATMPRES', 'value': 0, 'uom': 117, 'name': 'Station Pressure'}, # abs (station) press
+            {'driver': 'BARPRES', 'value': 0, 'uom': 117, 'name': 'Sealevel Pressure'}, # rel (sealevel) press
+            {'driver': 'GV0',     'value': 0, 'uom': 17,  'name': 'Feels Like'},      # feels like
+            {'driver': 'DEWPT',   'value': 0, 'uom': 17,  'name': 'Dewpoint'},    # dewpoint
+            {'driver': 'HEATIX',  'value': 0, 'uom': 17,  'name': 'Heat Index'},   # heat index
+            {'driver': 'WINDCH',  'value': 0, 'uom': 17,  'name': 'Windchill'},   # windchill
+            {'driver': 'GV1',     'value': 0, 'uom': 25,  'name': 'Pressure Trend'},      # pressure trend
+            {'driver': 'GV2',     'value': 0, 'uom': 56,  'name': 'Lightning Strikes'},      # lightning Strikes
+            {'driver': 'DISTANC', 'value': 0, 'uom': 83,  'name': 'Lightning Distance'},  # lightning Distance
+            {'driver': 'BATLVL',  'value': 0, 'uom': 72,  'name': 'Battery'},   # battery
 
             ]
     units = {}

@@ -17,11 +17,11 @@ class ForecastNode(udi_interface.Node):
     id = 'forecast'
     units = 'metric'
     drivers = [
-            {'driver': 'ST', 'value': 0, 'uom': 75},   # day
-            {'driver': 'GV0', 'value': 0, 'uom': 4},   # high temp
-            {'driver': 'GV1', 'value': 0, 'uom': 4},   # low temp
-            {'driver': 'GV13', 'value': 0, 'uom': 25}, # weather
-            {'driver': 'POP', 'value': 0, 'uom': 51}, # pop
+            {'driver': 'ST',   'value': 0, 'uom': 75, 'name': 'Day of Week'},   # day
+            {'driver': 'GV0',  'value': 0, 'uom': 4,  'name': 'High Temperature'},   # high temp
+            {'driver': 'GV1',  'value': 0, 'uom': 4,  'name': 'Low Temperature'},   # low temp
+            {'driver': 'GV13', 'value': 0, 'uom': 25, 'name': 'Weather Conditions'}, # weather
+            {'driver': 'POP',  'value': 0, 'uom': 51, 'name': 'Chance of Precipitation'}, # pop
             ]
 
     def __init__(self, polyglot, primary, address, name):
