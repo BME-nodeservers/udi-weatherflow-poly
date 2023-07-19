@@ -82,6 +82,16 @@ ST-139F-GV1-NAME = Low Temperature
 ST-139F-GV13-NAME = Conditions
 ST-139F-GV18-NAME = Chance of Precipitation
 
+# ncrain
+ND-ncrain-NAME = Nearcast Rain
+ND-ncrain-ICON = Weather
+ST-ncrain-PRECIP-NAME = Daily Rainfall
+ST-ncrain-GV2-NAME = Hourly Rainfall
+ST-ncrain-GV3-NAME = Weekly Rainfall
+ST-ncrain-GV4-NAME = Monthly Rainfall
+ST-ncrain-GV5-NAME = Yearly Rainfall
+ST-ncrain-GV6-NAME = Yesterday Rainfall
+
 EN_TREND-0 = Falling
 EN_TREND-1 = Steady
 EN_TREND-2 = Rising

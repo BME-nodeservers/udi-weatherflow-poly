@@ -17,6 +17,7 @@ from nodes import air
 from nodes import sky
 from nodes import tempest
 from nodes import forecast
+from nodes import ncrain
 from nodes import et3
 
 LOGGER = udi_interface.LOGGER
@@ -35,6 +36,7 @@ class Controller(udi_interface.Node):
 
         self.deviceList = {}
         self.rainList = {}
+        self.ncrainList = {}
         self.isConfigured = False
         self.nodesAdded = 1
         self.nodesCreated = 1
@@ -227,14 +229,36 @@ class Controller(udi_interface.Node):
         return units
 
     def query_station_rain(self, station, rain_id, rain_type):
-        # Do we have the device array in jdata?
-        if rain_type == 'SK' or rain_type == 'ST':
-            t_rain = self.get_today_rain(rain_id, rain_type)
-            p_rain = self.get_yesterday_rain(rain_id, rain_type)
-            w_rain = self.get_weekly_rain(rain_id, rain_type)
-            m_rain, y_rain = self.get_monthly_rain(rain_id, rain_type)
 
-            self.rain_accumulation(rain_id, p_rain, t_rain, w_rain, m_rain, y_rain)
+        # Query server for rain over various time periods.  Currently
+        # this is getting the hub reported rain values.  Howe do we
+        # add NC rain values???
+        if rain_type == 'SK' or rain_type == 'ST':
+            t_rain, t_rain_nc = self.get_today_rain(rain_id, rain_type)
+            p_rain, p_rain_nc = self.get_yesterday_rain(rain_id, rain_type)
+            w_rain, w_rain_nc = self.get_weekly_rain(rain_id, rain_type)
+            m_rain, y_rain, m_rain_nc, y_rain_nc = self.get_monthly_rain(rain_id, rain_type)
+
+            #self.rain_accumulation(rain_id, p_rain, t_rain, w_rain, m_rain, y_rain)
+            # We have both nc and non-nc values.  Do we send both or only one
+            # based on user preference???
+            self.rainList[rain_id] = {
+                'hourly': 0,
+                'daily': t_rain,
+                'weekly': w_rain,
+                'monthly': m_rain,
+                'yearly': y_rain,
+                'yesterday': p_rain,
+                }
+            self.ncrainList[rain_id] = {
+                'nc_hourly': 0,
+                'nc_daily': t_rain_nc,
+                'nc_weekly': w_rain_nc,
+                'nc_monthly': m_rain_nc,
+                'nc_yearly': y_rain_nc,
+                'nc_yesterday': p_rain_nc
+             }
+
     def query_device(self, device_id):
         path_str = 'https://swd.weatherflow.com'
         path_str += '/swd/rest/observations/device/' + str(device_id) 
@@ -258,12 +282,18 @@ class Controller(udi_interface.Node):
         node = self.poly.getNode(device_id)
         node.update(jdata['obs'], False)
 
+        # Update nearcast rain
+        node = self.poly.getNode(str(device_id) + '_nc')
+        node.update(jdata['obs'], False)
+
     def create_device_node(self, station, device, units, elevation):
         """
           Create a device node.  There are 3 types of nodes:
             Tempest:
             Sky:
             Air:
+
+          Adding nearcast rain node; should only be available for remote, not local
         """
 
         if self.poly.getNode(device['serial_number']) is not None:
@@ -275,21 +305,43 @@ class Controller(udi_interface.Node):
             node = air.AirNode(self.poly, self.address, device['device_id'], device['serial_number'])
             # TODO: do we need to account for agl too?
             node.elevation = elevation
+            node.units = units
+            self.poly.addNode(node)
         elif device['device_type'] == 'SK':
             LOGGER.info('Add SKY device node {}'.format(device['serial_number']))
             node = sky.SkyNode(self.poly, self.address, device['device_id'], device['serial_number'])
             node.rd = self.rainList[device['device_id']]
+            node.units = units
+            self.poly.addNode(node)
+
+            if device['remote']:
+                LOGGER.info('Creating node for nearcast rain values...')
+                self.nodesCreated += 1
+                node = ncrain.NCRainNode(self.poly, self.address, str(device['device_id']) + '_nc', str(device['serial_number']) + '_nc')
+                node.rd = self.ncrainList[device['device_id']]
+                node.units = units
+                node.device_type = device['device_type']
+                self.poly.addNode(node)
         elif device['device_type'] == 'ST':
             LOGGER.info('Add Tempest device node {}'.format(device['serial_number']))
             node = tempest.TempestNode(self.poly, self.address, device['device_id'], device['serial_number'])
             # TODO: do we need to account for agl too?
             node.elevation = elevation
             node.rd = self.rainList[device['device_id']]
+            node.units = units
+            self.poly.addNode(node)
+
+            if device['remote']:
+                LOGGER.info('Creating node for nearcast rain values...')
+                self.nodesCreated += 1
+                node = ncrain.NCRainNode(self.poly, self.address, str(device['device_id']) + '_nc', str(device['serial_number']) + '_nc')
+                node.rd = self.ncrainList[device['device_id']]
+                node.units = units
+                node.device_type = device['device_type']
+                self.poly.addNode(node)
         else:
             return
 
-        node.units = units
-        self.poly.addNode(node)
         self.nodesCreated += 1
 
     # Get observations data for each month of the year, so far
@@ -297,9 +349,13 @@ class Controller(udi_interface.Node):
         # Do month by month query of rain info.
         today = datetime.datetime.today()
         y_rain = 0
+        y_rain_nc = 0
+        m_rain = 0
+        m_rain_nc = 0
         for month in range(1, today.month+1):
             try:
                 m_rain = 0
+                m_rain_nc = 0
                 # get epoch time for start of month and end of month
                 try:
                     datem = datetime.datetime(today.year, month, 1)
@@ -330,18 +386,20 @@ class Controller(udi_interface.Node):
                 for obs in awdata['obs']:
                     # for sky, index 3 is daily rain.  for tempest it is index 12
                     m_rain += obs[3] if device_type == 'SK' else obs[12]
+                    m_rain_nc += obs[14] if device_type == 'SK' else obs[19]
                     y_rain += obs[3] if device_type == 'SK' else obs[12]
+                    y_rain_nc += obs[14] if device_type == 'SK' else obs[19]
 
-                LOGGER.info('Month ' + str(month) + ' had rain = ' + str(m_rain))
+                LOGGER.info('Month {} had rain = {}, nearcast = {}'.format(month, m_rain, m_rain_nc))
 
                 c.close()
             except:
                 LOGGER.error('Failed to get rain for month %d' % month);
                 c.close()
 
-        LOGGER.info('yearly rain total = ' + str(y_rain))
+        LOGGER.info('Year had rain = {}, nearcast = {}'.format(y_rain, y_rain_nc))
 
-        return m_rain, y_rain
+        return m_rain, y_rain, m_rain_nc, y_rain_nc
 
     # Get observations data for past week
     def get_weekly_rain(self, device_id, device_type):
@@ -358,12 +416,15 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('path = ' + path_str)
 
+        w_rain = 0
+        w_rain_nc = 0
         try:
             c = requests.get(path_str)
             awdata = c.json()
             w_rain = 0
             for obs in awdata['obs']:
                 w_rain += obs[3] if device_type == 'SK' else obs[12]
+                w_rain_nc += obs[14] if device_type == 'SK' else obs[19]
 
             c.close()
         except:
@@ -372,7 +433,7 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('weekly rain total = ' + str(w_rain))
 
-        return w_rain
+        return w_rain, w_rain_nc
 
     def get_yesterday_rain(self, device_id, device_type):
         today = datetime.datetime.today()
@@ -388,12 +449,15 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('path = ' + path_str)
 
+        y_rain = 0
+        y_rain_nc = 0
         try:
             c = requests.get(path_str)
             awdata = c.json()
             y_rain = 0
             for obs in awdata['obs']:
                 y_rain += obs[3] if device_type == 'SK' else obs[12]
+                y_rain_nc += obs[14] if device_type == 'SK' else obs[19]
 
             c.close()
         except:
@@ -402,7 +466,7 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('yesterday rain total = ' + str(y_rain))
 
-        return y_rain
+        return y_rain, y_rain_nc
 
     def get_today_rain(self, device_id, device_type):
         today = datetime.datetime.today()
@@ -417,22 +481,27 @@ class Controller(udi_interface.Node):
 
         LOGGER.info('path = ' + path_str)
 
+        rain_today = 0
+        rain_today_nc = 0
         try:
             c = requests.get(path_str)
             awdata = c.json()
             t_rain = 0
             for obs in awdata['obs']:
-                t_rain += obs[3] if device_type == 'SK' else obs[12]
+                rain_today += obs[3] if device_type == 'SK' else obs[12]
+                rain_today_nc += obs[14] if device_type == 'SK' else obs[19]
 
             c.close()
         except:
             LOGGER.error('Failed to get today rain')
             c.close()
+            return 0, 0
 
         LOGGER.info('today rain total = ' + str(t_rain))
-        return t_rain
+        return rain_today, rain_today_nc
 
 
+    #### No longer used
     def rain_accumulation(self, device, p_rain, d_rain, w_rain, m_rain, y_rain):
         rd = {
                 'hourly': 0,
@@ -519,9 +588,10 @@ class Controller(udi_interface.Node):
                 self.units = info['units']
                 for device in info['devices']:
                     remote = False
-                    self.create_device_node(station['id'], device, info['units'], info['elevation'])
                     if station['remote'].lower() == 'remote':
                         remote = True
+                    device['remote'] = remote
+                    self.create_device_node(station['id'], device, info['units'], info['elevation'])
                     self.deviceList[device['device_id']] = {'serial_number': device['serial_number'], 'type': device['device_type'], 'remote': remote, 'first': True}
 
         if self.Parameters['Forecast'] != 0:

@@ -101,4 +101,16 @@
         </sts>
     </nodeDef>
 
+    <nodeDef id="ncrain" nodeType="139" nls="sky">
+        <editors />
+        <sts>
+            <st id="PRECIP" editor="I_RAIN" />
+            <st id="GV2" editor="I_RAIN" />
+            <st id="GV3" editor="I_RAIN" />
+            <st id="GV4" editor="I_RAIN" />
+            <st id="GV5" editor="I_RAIN" />
+            <st id="GV6" editor="I_RAIN" />
+        </sts>
+    </nodeDef>
+
 </nodeDefs>
