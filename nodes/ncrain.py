@@ -48,7 +48,7 @@ class NCRainNode(udi_interface.Node):
         self.rd['nc_hourly'] += current_rain
 
         if now.day != self.prev.day:
-            self.rd['nc_yesterday'] = self.rd['daily']
+            self.rd['nc_yesterday'] = self.rd['nc_daily']
             self.rd['nc_daily'] = 0
         self.rd['nc_daily'] += current_rain
 
