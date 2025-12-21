@@ -284,7 +284,10 @@ class Controller(udi_interface.Node):
 
         # Update nearcast rain
         node = self.poly.getNode(str(device_id) + '_nc')
-        node.update(jdata['obs'], False)
+        try:
+            node.update(jdata['obs'], False)
+        except:
+            LOGGER.debug('No nearcast node for {}'.format(device_id))
 
     def create_device_node(self, station, device, units, elevation):
         """
